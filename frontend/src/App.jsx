@@ -11,9 +11,19 @@ import MapaZgloszen from "./pages/MapaZgloszen"
 import Raport from "./pages/Raport"
 
 import Wodowskazy from "./pages/Wodowskazy"
+import DodajPomiar from "./pages/DodajPomiar"
+import ArchiwumPomiarow from "./pages/ArchiwumPomiarow"
+import WykresPomiarow from "./pages/WykresPomiarow"
+
 import Admin from "./pages/Admin"
 
 import EdycjaZgloszenia from "./pages/EdycjaZgloszenia"
+
+import DodajWodowskaz from "./pages/DodajWodowskaz"
+import MapaWodowskazow from "./pages/MapaWodowskazow"
+import SzczegolyWodowskazu from "./pages/SzczegolyWodowskazu"
+
+import DodajUzytkownika from "./pages/DodajUzytkownika"
 
 function App() {
   return (
@@ -30,7 +40,14 @@ function App() {
       <Route path="/obiekty/raport" element={<Raport />} />
 
       <Route path="/wodowskazy" element={<Wodowskazy />} />
+      <Route path="/wodowskazy/dodaj" element={<DodajWodowskaz />} />
+      <Route path="/wodowskazy/mapa" element={<MapaWodowskazow />} />
+      <Route path="/wodowskazy/:id" element={<SzczegolyWodowskazu />} />
+      <Route path="/wodowskazy/archiwum" element={<ArchiwumPomiarow />} />
+      <Route path="/wodowskazy/wykres" element={<WykresPomiarow />} />
+
       <Route path="/admin" element={<Admin />} />
+      <Route path="/admin/dodaj" element={<DodajUzytkownika />} />
     </Routes>
   )
 }

@@ -1,59 +1,47 @@
-import { useNavigate } from "react-router-dom"
 import { useState } from "react"
-import { useZgloszenia } from "../context/ZgloszeniaContext"
+import { useNavigate } from "react-router-dom"
+import { useWodowskazy } from "../context/WodowskazyContext"
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet"
 import AppContainer from "../components/AppContainer"
 import MenuButton from "../components/MenuButton"
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet"
 
-// komponent do obsługi kliknięcia w mapę
 function ClickHandler({ setLat, setLng }) {
   useMapEvents({
     click(e) {
       setLat(e.latlng.lat)
       setLng(e.latlng.lng)
-    },
+    }
   })
   return null
 }
 
-function Zgloszenie() {
-  const navigate = useNavigate()
-  const { dodajZgloszenie } = useZgloszenia()
-
-  const [tytul, setTytul] = useState("")
-  const [opis, setOpis] = useState("")
+function DodajWodowskaz() {
+  const [nazwa, setNazwa] = useState("")
   const [lat, setLat] = useState(null)
   const [lng, setLng] = useState(null)
+  const { dodajWodowskaz } = useWodowskazy()
+  const navigate = useNavigate()
 
   const handleSubmit = () => {
-    if (!tytul || !opis || lat === null || lng === null) {
-      alert("Wypełnij wszystkie pola i kliknij lokalizację na mapie")
+    if (!nazwa || lat === null || lng === null) {
+      alert("Podaj nazwę i wybierz lokalizację")
       return
     }
 
-    dodajZgloszenie({ tytul, opis, lat, lng })
-    navigate("/obiekty/lista")
+    dodajWodowskaz(nazwa, lat, lng)
+    navigate("/wodowskazy/mapa")
   }
 
   return (
     <AppContainer>
-      <h2>Zgłoszenie usterki</h2>
+      <h2>Nowy wodowskaz</h2>
 
       <input
-        placeholder="Tytuł"
-        value={tytul}
-        onChange={(e) => setTytul(e.target.value)}
+        placeholder="Nazwa punktu"
+        value={nazwa}
+        onChange={e => setNazwa(e.target.value)}
         style={inputStyle}
       />
-
-      <textarea
-        placeholder="Opis"
-        value={opis}
-        onChange={(e) => setOpis(e.target.value)}
-        style={inputStyle}
-      />
-
-      <h4>Wybierz lokalizację na mapie:</h4>
 
       <MapContainer
         center={[51.1079, 17.0385]}
@@ -68,7 +56,7 @@ function Zgloszenie() {
         {lat && lng && <Marker position={[lat, lng]} />}
       </MapContainer>
 
-      <MenuButton text="Wyślij zgłoszenie" onClick={handleSubmit} />
+      <MenuButton text="Zapisz wodowskaz" onClick={handleSubmit} />
       <MenuButton text="Powrót" onClick={() => navigate(-1)} />
     </AppContainer>
   )
@@ -77,7 +65,7 @@ function Zgloszenie() {
 const inputStyle = {
   width: "100%",
   padding: "10px",
-  marginBottom: "10px",
+  marginBottom: "10px"
 }
 
-export default Zgloszenie
+export default DodajWodowskaz

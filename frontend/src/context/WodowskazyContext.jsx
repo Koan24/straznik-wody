@@ -1,15 +1,13 @@
 import { createContext, useContext, useState, useEffect } from "react"
+import { getWodowskazy, saveWodowskazy } from "../services/wodowskazyService"
 
 const WodowskazyContext = createContext()
 
 export function WodowskazyProvider({ children }) {
-  const [wodowskazy, setWodowskazy] = useState(() => {
-    const zapisane = localStorage.getItem("wodowskazy")
-    return zapisane ? JSON.parse(zapisane) : []
-  })
+  const [wodowskazy, setWodowskazy] = useState(() => getWodowskazy())
 
   useEffect(() => {
-    localStorage.setItem("wodowskazy", JSON.stringify(wodowskazy))
+  saveWodowskazy(wodowskazy)
   }, [wodowskazy])
 
   const dodajWodowskaz = (nazwa, lat, lng) => {

@@ -84,7 +84,7 @@ function SzczegolyWodowskazu() {
         <Line data={data} />
       )}
 
-      <MenuButton text="Powrót" onClick={() => navigate(-1)} />
+      <MenuButton text="Powrót" onClick={() => navigate("/wodowskazy/mapa")} />
     </AppContainer>
   )
 }

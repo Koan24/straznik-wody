@@ -4,6 +4,7 @@ import { useZgloszenia } from "../context/ZgloszeniaContext"
 import AppContainer from "../components/AppContainer"
 import MenuButton from "../components/MenuButton"
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet"
+import Layout from "../components/Layout"
 
 // komponent do obsługi kliknięcia w mapę
 function ClickHandler({ setLat, setLng }) {
@@ -36,41 +37,42 @@ function Zgloszenie() {
   }
 
   return (
-    <AppContainer>
-      <h2>Zgłoszenie usterki</h2>
-
-      <input
-        placeholder="Tytuł"
-        value={tytul}
-        onChange={(e) => setTytul(e.target.value)}
-        style={inputStyle}
-      />
-
-      <textarea
-        placeholder="Opis"
-        value={opis}
-        onChange={(e) => setOpis(e.target.value)}
-        style={inputStyle}
-      />
-
-      <h4>Wybierz lokalizację na mapie:</h4>
-
-      <MapContainer
-        center={[51.1079, 17.0385]}
-        zoom={13}
-        style={{ height: "300px", width: "100%", marginBottom: "10px" }}
-      >
-        <TileLayer
-          attribution="© OpenStreetMap"
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    <Layout title="Zgłoszenie usterki">
+      <AppContainer>
+        
+        <input
+          placeholder="Tytuł"
+          value={tytul}
+          onChange={(e) => setTytul(e.target.value)}
+          style={inputStyle}
         />
-        <ClickHandler setLat={setLat} setLng={setLng} />
-        {lat && lng && <Marker position={[lat, lng]} />}
-      </MapContainer>
 
-      <MenuButton text="Wyślij zgłoszenie" onClick={handleSubmit} />
-      <MenuButton text="Powrót" onClick={() => navigate(-1)} />
-    </AppContainer>
+        <textarea
+          placeholder="Opis"
+          value={opis}
+          onChange={(e) => setOpis(e.target.value)}
+          style={inputStyle}
+        />
+
+        <h4>Wybierz lokalizację na mapie:</h4>
+
+        <MapContainer
+          center={[51.1079, 17.0385]}
+          zoom={13}
+          style={{ height: "300px", width: "100%", marginBottom: "10px" }}
+        >
+          <TileLayer
+            attribution="© OpenStreetMap"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <ClickHandler setLat={setLat} setLng={setLng} />
+          {lat && lng && <Marker position={[lat, lng]} />}
+        </MapContainer>
+
+        <MenuButton text="Wyślij zgłoszenie" onClick={handleSubmit} />
+        <MenuButton text="Powrót" onClick={() => navigate("/obiekty")} />
+      </AppContainer>
+    </Layout>
   )
 }
 

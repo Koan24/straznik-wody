@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import { useZgloszenia } from "../context/ZgloszeniaContext"
 import AppContainer from "../components/AppContainer"
 import MenuButton from "../components/MenuButton"
+import Layout from "../components/Layout"
 
 function EdycjaZgloszenia() {
   const { id } = useParams() 
@@ -42,30 +43,31 @@ function EdycjaZgloszenia() {
   }
 
   return (
-    <AppContainer>
-      <h2>Edycja zgłoszenia</h2>
+    <Layout title="Edycja zgłoszenia">
+      <AppContainer>
 
-      <input
-        value={tytul}
-        onChange={e => setTytul(e.target.value)}
-        style={inputStyle}
-      />
+        <input
+          value={tytul}
+          onChange={e => setTytul(e.target.value)}
+          style={inputStyle}
+        />
 
-      <input
-        value={lokalizacja}
-        onChange={e => setLokalizacja(e.target.value)}
-        style={inputStyle}
-      />
+        <input
+          value={lokalizacja}
+          onChange={e => setLokalizacja(e.target.value)}
+          style={inputStyle}
+        />
 
-      <textarea
-        value={opis}
-        onChange={e => setOpis(e.target.value)}
-        style={inputStyle}
-      />
+        <textarea
+          value={opis}
+          onChange={e => setOpis(e.target.value)}
+          style={inputStyle}
+        />
 
-      <MenuButton text="Zapisz zmiany" onClick={handleSave} />
-      <MenuButton text="Powrót" onClick={() => navigate(-1)} />
-    </AppContainer>
+        <MenuButton text="Zapisz zmiany" onClick={handleSave} />
+        <MenuButton text="Powrót" onClick={() => navigate(-1)} />
+      </AppContainer>
+    </Layout>
   )
 }
 

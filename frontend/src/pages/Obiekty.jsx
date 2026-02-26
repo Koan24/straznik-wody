@@ -31,7 +31,7 @@ function Obiekty() {
 
       <MenuButton
         text="Powrót"
-        onClick={() => navigate(-1)}
+        onClick={() => navigate("/home")}
       />
     </AppContainer>
   )

@@ -3,6 +3,7 @@ import { useZgloszenia } from "../context/ZgloszeniaContext"
 import { jsPDF } from "jspdf"
 import AppContainer from "../components/AppContainer"
 import MenuButton from "../components/MenuButton"
+import Layout from "../components/Layout"
 
 function Raport() {
   const navigate = useNavigate()
@@ -65,12 +66,13 @@ function Raport() {
   }
 
   return (
-    <AppContainer>
-      <h2>Generowanie raportu PDF</h2>
-
-      <MenuButton text="Generuj PDF" onClick={generujPDF} />
-      <MenuButton text="Powrót" onClick={() => navigate(-1)} />
-    </AppContainer>
+    <Layout title="Generowanie raportu PDF">
+      <AppContainer>
+        
+        <MenuButton text="Generuj PDF" onClick={generujPDF} />
+        <MenuButton text="Powrót" onClick={() => navigate("/obiekty")} />
+      </AppContainer>
+    </Layout>
   )
 }
 

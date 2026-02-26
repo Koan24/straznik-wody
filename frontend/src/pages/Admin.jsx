@@ -2,39 +2,42 @@ import { useNavigate } from "react-router-dom"
 import { useUzytkownicy } from "../context/UzytkownicyContext"
 import AppContainer from "../components/AppContainer"
 import MenuButton from "../components/MenuButton"
+import Layout from "../components/Layout"
 
 function Admin() {
   const navigate = useNavigate()
   const { uzytkownicy, usunUzytkownika } = useUzytkownicy()
 
   return (
-    <AppContainer>
-      <h2>Panel administratora</h2>
+    <Layout title="Panel administratora">
+      <AppContainer>
+        
+        <MenuButton
+          text="Dodaj użytkownika"
+          onClick={() => navigate("/admin/dodaj")}
+        />
 
-      <MenuButton
-        text="Dodaj użytkownika"
-        onClick={() => navigate("/admin/dodaj")}
-      />
+        <h4>Lista użytkowników</h4>
 
-      <h4>Lista użytkowników</h4>
+        {uzytkownicy.map(u => (
+          <div key={u.id} style={cardStyle}>
+            <strong>{u.imie}</strong>
+            <div>{u.email}</div>
+            <div>Rola: {u.rola}</div>
 
-      {uzytkownicy.map(u => (
-        <div key={u.id} style={cardStyle}>
-          <strong>{u.imie}</strong>
-          <div>{u.email}</div>
-          <div>Rola: {u.rola}</div>
+            <button
+              style={deleteStyle}
+              onClick={() => usunUzytkownika(u.id)}
+            >
+              Usuń
+            </button>
+          </div>
+        ))}
 
-          <button
-            style={deleteStyle}
-            onClick={() => usunUzytkownika(u.id)}
-          >
-            Usuń
-          </button>
-        </div>
-      ))}
-
-      <MenuButton text="Powrót" onClick={() => navigate(-1)} />
-    </AppContainer>
+        <MenuButton text="Powrót" onClick={() => navigate(-1)} />
+      
+      </AppContainer>
+    </Layout>
   )
 }
 

@@ -6,15 +6,18 @@ import { ZgloszeniaProvider } from "./context/ZgloszeniaContext"
 import "leaflet/dist/leaflet.css"
 import { WodowskazyProvider } from "./context/WodowskazyContext"
 import { UzytkownicyProvider } from "./context/UzytkownicyContext"
+import { ThemeProvider } from "./context/ThemeContext"
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <ZgloszeniaProvider>
-      <WodowskazyProvider>
-        <UzytkownicyProvider>
-          <App />
-        </UzytkownicyProvider>
-      </WodowskazyProvider>
-    </ZgloszeniaProvider>
+    <ThemeProvider>
+      <ZgloszeniaProvider>
+        <WodowskazyProvider>
+          <UzytkownicyProvider>
+            <App />
+          </UzytkownicyProvider>
+        </WodowskazyProvider>
+      </ZgloszeniaProvider>
+    </ThemeProvider>
   </BrowserRouter>
 )

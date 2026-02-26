@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { useUzytkownicy } from "../context/UzytkownicyContext"
 import AppContainer from "../components/AppContainer"
 import MenuButton from "../components/MenuButton"
+import Layout from "../components/Layout"
 
 function DodajUzytkownika() {
   const [imie, setImie] = useState("")
@@ -18,40 +19,49 @@ function DodajUzytkownika() {
       return
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+    if (!emailRegex.test(email)) {
+      alert("Podaj poprawny adres email (np. nazwa@domena.pl)")
+      return
+    }
+
     dodajUzytkownika(imie, email, rola)
     navigate("/admin")
   }
 
   return (
-    <AppContainer>
-      <h2>Nowy użytkownik</h2>
+    <Layout title="Nowy użytkownik">
+      <AppContainer>
 
-      <input
-        placeholder="Imię"
-        value={imie}
-        onChange={e => setImie(e.target.value)}
-        style={inputStyle}
-      />
+        <input
+          placeholder="Imię"
+          value={imie}
+          onChange={e => setImie(e.target.value)}
+          style={inputStyle}
+        />
 
-      <input
-        placeholder="Email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        style={inputStyle}
-      />
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          style={inputStyle}
+        />
 
-      <select
-        value={rola}
-        onChange={e => setRola(e.target.value)}
-        style={inputStyle}
-      >
-        <option value="user">User</option>
-        <option value="admin">Admin</option>
-      </select>
+        <select
+          value={rola}
+          onChange={e => setRola(e.target.value)}
+          style={inputStyle}
+        >
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
 
-      <MenuButton text="Zapisz" onClick={handleSubmit} />
-      <MenuButton text="Powrót" onClick={() => navigate(-1)} />
-    </AppContainer>
+        <MenuButton text="Zapisz" onClick={handleSubmit} />
+        <MenuButton text="Powrót" onClick={() => navigate("/admin")} />
+      </AppContainer>
+    </Layout>
   )
 }
 

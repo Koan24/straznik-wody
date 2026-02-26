@@ -1,18 +1,13 @@
 import { createContext, useContext, useState, useEffect } from "react"
+import { getUzytkownicy, saveUzytkownicy } from "../services/uzytkownicyService"
 
 const UzytkownicyContext = createContext()
 
 export function UzytkownicyProvider({ children }) {
-  const [uzytkownicy, setUzytkownicy] = useState(() => {
-    const zapisane = localStorage.getItem("uzytkownicy")
-    return zapisane ? JSON.parse(zapisane) : [
-      { id: 1, imie: "Admin", email: "admin@test.pl", rola: "admin" },
-      { id: 2, imie: "User", email: "user@test.pl", rola: "user" }
-    ]
-  })
+  const [uzytkownicy, setUzytkownicy] = useState(() => getUzytkownicy())
 
   useEffect(() => {
-    localStorage.setItem("uzytkownicy", JSON.stringify(uzytkownicy))
+    saveUzytkownicy(uzytkownicy)
   }, [uzytkownicy])
 
   const dodajUzytkownika = (imie, email, rola) => {

@@ -2,41 +2,43 @@ import { useNavigate } from "react-router-dom"
 import { useZgloszenia } from "../context/ZgloszeniaContext"
 import AppContainer from "../components/AppContainer"
 import MenuButton from "../components/MenuButton"
+import Layout from "../components/Layout"
 
 function ListaZgloszen() {
   const navigate = useNavigate()
   const { zgloszenia, usunZgloszenie } = useZgloszenia()
 
   return (
-    <AppContainer>
-      <h2>Lista zgłoszeń</h2>
+    <Layout title="Lista zgłoszeń">
+      <AppContainer>
+      
+        {zgloszenia.length === 0 && <div>Brak zgłoszeń</div>}
 
-      {zgloszenia.length === 0 && <div>Brak zgłoszeń</div>}
+        {zgloszenia.map(z => (
+          <div key={z.id} style={cardStyle}>
+            <strong>{z.tytul}</strong>
+            <div>{z.lokalizacja}</div>
+            <div>{z.opis}</div>
 
-      {zgloszenia.map(z => (
-        <div key={z.id} style={cardStyle}>
-          <strong>{z.tytul}</strong>
-          <div>{z.lokalizacja}</div>
-          <div>{z.opis}</div>
+            <button
+              style={deleteButtonStyle}
+              onClick={() => usunZgloszenie(z.id)}
+            >
+              Usuń
+            </button>
 
-          <button
-            style={deleteButtonStyle}
-            onClick={() => usunZgloszenie(z.id)}
-          >
-            Usuń
-          </button>
+            <button
+            style={editButtonStyle}
+            onClick={() => navigate(`/obiekty/edycja/${z.id}`)}
+            >
+              Edytuj
+            </button>
+          </div>
+        ))}
 
-          <button
-          style={editButtonStyle}
-          onClick={() => navigate(`/obiekty/edycja/${z.id}`)}
-          >
-            Edytuj
-          </button>
-        </div>
-      ))}
-
-      <MenuButton text="Powrót" onClick={() => navigate(-1)} />
-    </AppContainer>
+        <MenuButton text="Powrót" onClick={() => navigate("/obiekty")} />
+      </AppContainer>
+    </Layout>
   )
 }
 

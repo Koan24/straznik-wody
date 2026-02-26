@@ -4,6 +4,7 @@ import { useWodowskazy } from "../context/WodowskazyContext"
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet"
 import AppContainer from "../components/AppContainer"
 import MenuButton from "../components/MenuButton"
+import Layout from "../components/Layout"
 
 function ClickHandler({ setLat, setLng }) {
   useMapEvents({
@@ -33,32 +34,33 @@ function DodajWodowskaz() {
   }
 
   return (
-    <AppContainer>
-      <h2>Nowy wodowskaz</h2>
+    <Layout title="Nowy wodowskaz">
+      <AppContainer>
 
-      <input
-        placeholder="Nazwa punktu"
-        value={nazwa}
-        onChange={e => setNazwa(e.target.value)}
-        style={inputStyle}
-      />
-
-      <MapContainer
-        center={[51.1079, 17.0385]}
-        zoom={13}
-        style={{ height: "300px", width: "100%", marginBottom: "10px" }}
-      >
-        <TileLayer
-          attribution="© OpenStreetMap"
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        <input
+          placeholder="Nazwa punktu"
+          value={nazwa}
+          onChange={e => setNazwa(e.target.value)}
+          style={inputStyle}
         />
-        <ClickHandler setLat={setLat} setLng={setLng} />
-        {lat && lng && <Marker position={[lat, lng]} />}
-      </MapContainer>
 
-      <MenuButton text="Zapisz wodowskaz" onClick={handleSubmit} />
-      <MenuButton text="Powrót" onClick={() => navigate(-1)} />
-    </AppContainer>
+        <MapContainer
+          center={[51.1079, 17.0385]}
+          zoom={13}
+          style={{ height: "300px", width: "100%", marginBottom: "10px" }}
+        >
+          <TileLayer
+            attribution="© OpenStreetMap"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <ClickHandler setLat={setLat} setLng={setLng} />
+          {lat && lng && <Marker position={[lat, lng]} />}
+        </MapContainer>
+
+        <MenuButton text="Zapisz wodowskaz" onClick={handleSubmit} />
+        <MenuButton text="Powrót" onClick={() => navigate("/wodowskazy")} />
+      </AppContainer>
+    </Layout>
   )
 }
 

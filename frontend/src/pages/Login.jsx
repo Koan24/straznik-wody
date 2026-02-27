@@ -1,30 +1,77 @@
 import { useNavigate } from "react-router-dom"
-import AppContainer from "../components/AppContainer"
-import MenuButton from "../components/MenuButton"
+import { useState } from "react"
+import Button from "../components/Button"
 
-function Register() {
+function Login() {
   const navigate = useNavigate()
 
+  const [email, setEmail] = useState("")
+  const [haslo, setHaslo] = useState("")
+
+  const handleLogin = () => {
+    if (!email || !haslo) {
+      alert("Wypełnij wszystkie pola")
+      return
+    }
+
+    navigate("/home")
+  }
+
   return (
-    <AppContainer>
-      <h2>Rejestracja</h2>
+    <div className="min-h-screen flex items-center justify-center bg-background dark:bg-darkbg transition-colors duration-300">
+      
+      <div className="bg-white dark:bg-slate-800 p-10 rounded-2xl shadow-card border border-gray-200 dark:border-gray-700 w-full max-w-md">
+        
+        <h2 className="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-gray-100">
+          Logowanie
+        </h2>
 
-      <input placeholder="Imię" style={inputStyle} />
-      <input placeholder="Nazwisko" style={inputStyle} />
-      <input placeholder="Email" style={inputStyle} />
-      <input placeholder="Hasło" type="password" style={inputStyle} />
+        <div className="space-y-5">
 
-      <MenuButton text="Zarejestruj" onClick={() => navigate("/login")} />
+          <input
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="
+              w-full px-4 py-3 rounded-lg
+              border border-gray-300 dark:border-gray-600
+              bg-white dark:bg-slate-900
+              text-gray-800 dark:text-gray-100
+              focus:outline-none focus:ring-2 focus:ring-primary
+              transition
+            "
+          />
 
-      <MenuButton text="Powrót" onClick={() => navigate(-1)} />
-    </AppContainer>
+          <input
+            placeholder="Hasło"
+            type="password"
+            value={haslo}
+            onChange={(e) => setHaslo(e.target.value)}
+            className="
+              w-full px-4 py-3 rounded-lg
+              border border-gray-300 dark:border-gray-600
+              bg-white dark:bg-slate-900
+              text-gray-800 dark:text-gray-100
+              focus:outline-none focus:ring-2 focus:ring-primary
+              transition
+            "
+          />
+
+          <Button variant="primary" onClick={handleLogin}>
+            Zaloguj
+          </Button>
+
+          <Button
+            variant="secondary"
+            onClick={() => navigate("/register")}
+          >
+            Rejestracja
+          </Button>
+
+        </div>
+      </div>
+    </div>
   )
 }
 
-const inputStyle = {
-  width: "100%",
-  padding: "10px",
-  marginBottom: "10px"
-}
-
-export default Register
+export default Login

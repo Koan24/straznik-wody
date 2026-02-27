@@ -4,6 +4,7 @@ import { useZgloszenia } from "../context/ZgloszeniaContext"
 import Button from "../components/Button"
 import Card from "../components/Card"
 import Layout from "../components/Layout"
+import { useToast } from "../context/ToastContext"
 
 function EdycjaZgloszenia() {
   const { id } = useParams()
@@ -17,6 +18,8 @@ function EdycjaZgloszenia() {
   const [lokalizacja, setLokalizacja] = useState("")
   const [opis, setOpis] = useState("")
 
+  const {addToast} = useToast()
+
   useEffect(() => {
     if (zgloszenie) {
       setTytul(zgloszenie.tytul)
@@ -27,11 +30,12 @@ function EdycjaZgloszenia() {
 
   const handleSave = () => {
     if (!tytul || !lokalizacja || !opis) {
-      alert("Wypełnij wszystkie pola")
+      addToast("Wypełnij wszystkie pola", "error")
       return
     }
 
     aktualizujZgloszenie(Number(id), { tytul, lokalizacja, opis })
+    addToast("Zgłoszenie zaktualizowane", "success")
     navigate("/obiekty/lista")
   }
 

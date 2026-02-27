@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import Button from "../components/Button"
+import { useToast } from "../context/ToastContext"
 
 function Register() {
   const navigate = useNavigate()
@@ -10,12 +11,16 @@ function Register() {
   const [email, setEmail] = useState("")
   const [haslo, setHaslo] = useState("")
 
+  const {addToast} = useToast()
+
   const handleRegister = () => {
     if (!imie || !nazwisko || !email || !haslo) {
-      alert("Wypełnij wszystkie pola")
+      addToast("Wypełnij wszystkie pola", "error")
       return
     }
 
+    addToast("Zarejestrowano", "success")
+    
     navigate("/login")
   }
 

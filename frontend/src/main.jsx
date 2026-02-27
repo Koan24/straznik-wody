@@ -7,18 +7,21 @@ import "leaflet/dist/leaflet.css"
 import { WodowskazyProvider } from "./context/WodowskazyContext"
 import { UzytkownicyProvider } from "./context/UzytkownicyContext"
 import { ThemeProvider } from "./context/ThemeContext"
+import { ToastProvider } from "./context/ToastContext"
 import "./index.css"
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <ThemeProvider>
-      <ZgloszeniaProvider>
-        <WodowskazyProvider>
-          <UzytkownicyProvider>
-            <App />
-          </UzytkownicyProvider>
-        </WodowskazyProvider>
-      </ZgloszeniaProvider>
+      <ToastProvider>
+        <ZgloszeniaProvider>
+          <WodowskazyProvider>
+            <UzytkownicyProvider>
+              <App />
+            </UzytkownicyProvider>
+          </WodowskazyProvider>
+        </ZgloszeniaProvider>
+      </ToastProvider>  
     </ThemeProvider>
   </BrowserRouter>
 )

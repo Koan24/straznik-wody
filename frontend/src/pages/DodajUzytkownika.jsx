@@ -4,6 +4,7 @@ import { useUzytkownicy } from "../context/UzytkownicyContext"
 import Layout from "../components/Layout"
 import Button from "../components/Button"
 import Card from "../components/Card"
+import { useToast } from "../context/ToastContext"
 
 function DodajUzytkownika() {
   const [imie, setImie] = useState("")
@@ -11,22 +12,26 @@ function DodajUzytkownika() {
   const [rola, setRola] = useState("user")
 
   const { dodajUzytkownika } = useUzytkownicy()
+  const {addToast} = useToast()
   const navigate = useNavigate()
 
   const handleSubmit = () => {
     if (!imie || !email) {
-      alert("Wypełnij wszystkie pola")
+      addToast("Wypełnij wszystkie pola", "error")
       return
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
     if (!emailRegex.test(email)) {
-      alert("Podaj poprawny adres email (np. nazwa@domena.pl)")
+      addToast("Podaj poprawny adres email (np. nazwa@domena.pl)", "error")
       return
     }
 
     dodajUzytkownika(imie, email, rola)
+
+    addToast("Użytkownik zapisany poprawnie", "success")
+
     navigate("/admin")
   }
 

@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet"
 import Button from "../components/Button"
 import Card from "../components/Card"
 import Layout from "../components/Layout"
+import { useToast } from "../context/ToastContext"
 
 function ClickHandler({ setLat, setLng }) {
   useMapEvents({
@@ -22,15 +23,18 @@ function DodajWodowskaz() {
   const [lng, setLng] = useState(null)
 
   const { dodajWodowskaz } = useWodowskazy()
+  const {addToast} = useToast()
+
   const navigate = useNavigate()
 
   const handleSubmit = () => {
     if (!nazwa || lat === null || lng === null) {
-      alert("Podaj nazwę i wybierz lokalizację")
+      addToast("Podaj nazwę i wybierz lokalizację", "error")
       return
     }
 
     dodajWodowskaz(nazwa, lat, lng)
+    addToast("Wodowskaz zapisany poprawnie", "success")
     navigate("/wodowskazy/mapa")
   }
 

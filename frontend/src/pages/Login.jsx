@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import Button from "../components/Button"
+import { useToast } from "../context/ToastContext"
 
 function Login() {
   const navigate = useNavigate()
@@ -8,12 +9,16 @@ function Login() {
   const [email, setEmail] = useState("")
   const [haslo, setHaslo] = useState("")
 
+  const {addToast} = useToast()
+
   const handleLogin = () => {
     if (!email || !haslo) {
-      alert("Wypełnij wszystkie pola")
+      addToast("Wypełnij wszystkie pola", "error")
       return
     }
 
+    addToast("Zalogowano pomyślnie", "success")
+    
     navigate("/home")
   }
 

@@ -4,19 +4,24 @@ import { useWodowskazy } from "../context/WodowskazyContext"
 import Layout from "../components/Layout"
 import Button from "../components/Button"
 import Card from "../components/Card"
+import { useToast } from "../context/ToastContext"
 
 function DodajPomiar() {
   const [wartosc, setWartosc] = useState("")
   const { dodajPomiar } = useWodowskazy()
+  const {addToast} = useToast()
   const navigate = useNavigate()
 
   const handleSubmit = () => {
     if (!wartosc) {
-      alert("Podaj wartość pomiaru")
+      addToast("Podaj wartość pomiaru", "error");
       return
     }
 
     dodajPomiar(wartosc)
+
+    addToast("Pomiar zapisany poprawnie", "success")
+
     navigate("/wodowskazy/archiwum")
   }
 

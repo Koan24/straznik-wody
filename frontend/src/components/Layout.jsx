@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import { useTheme } from "../context/ThemeContext"
+import {motion} from "framer-motion"
 
 function Layout({ children, title, showHomeButton = true }) {
   const navigate = useNavigate()

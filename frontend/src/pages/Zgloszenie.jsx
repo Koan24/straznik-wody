@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet"
 import Layout from "../components/Layout"
 import Button from "../components/Button"
 import Card from "../components/Card"
+import { useToast } from "../context/ToastContext"
 
 function ClickHandler({ setLat, setLng }) {
   useMapEvents({
@@ -25,13 +26,16 @@ function Zgloszenie() {
   const [lat, setLat] = useState(null)
   const [lng, setLng] = useState(null)
 
+  const {addToast} = useToast()
+
   const handleSubmit = () => {
     if (!tytul || !opis || lat === null || lng === null) {
-      alert("Wypełnij wszystkie pola i kliknij lokalizację na mapie")
+      addToast("Wypełnij wszystkie pola i kliknij lokalizację na mapie", "error")
       return
     }
 
     dodajZgloszenie({ tytul, opis, lat, lng })
+    addToast("Pomiar dodany poprawnie", "success")
     navigate("/obiekty/lista")
   }
 

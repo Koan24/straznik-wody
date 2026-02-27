@@ -15,6 +15,7 @@ import {
 import Layout from "../components/Layout"
 import Button from "../components/Button"
 import Card from "../components/Card"
+import { useToast } from "../context/ToastContext"
 
 ChartJS.register(
   CategoryScale,
@@ -34,6 +35,8 @@ function SzczegolyWodowskazu() {
   const wodowskaz = wodowskazy.find(w => String(w.id) === id)
   const [wartosc, setWartosc] = useState("")
 
+  const {addToast} = useToast()
+
   if (!wodowskaz) {
     return (
       <Layout title="Błąd">
@@ -48,11 +51,12 @@ function SzczegolyWodowskazu() {
 
   const handleAdd = () => {
     if (!wartosc) {
-      alert("Podaj wartość")
+      addToast("Podaj wartość", "error")
       return
     }
 
     dodajPomiar(wodowskaz.id, wartosc)
+    addToast("Pomiar dodany poprawnie", "success")
     setWartosc("")
   }
 

@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom"
 import { useUzytkownicy } from "../context/UzytkownicyContext"
-import AppContainer from "../components/AppContainer"
-import MenuButton from "../components/MenuButton"
 import Layout from "../components/Layout"
+import Button from "../components/Button"
+import Card from "../components/Card"
 
 function Admin() {
   const navigate = useNavigate()
@@ -10,50 +10,56 @@ function Admin() {
 
   return (
     <Layout title="Panel administratora">
-      <AppContainer>
-        
-        <MenuButton
-          text="Dodaj użytkownika"
+
+      <div className="mb-8">
+        <Button
+          variant="primary"
           onClick={() => navigate("/admin/dodaj")}
-        />
+        >
+          Dodaj użytkownika
+        </Button>
+      </div>
 
-        <h4>Lista użytkowników</h4>
+      <h4 className="text-lg font-semibold mb-6">
+        Lista użytkowników
+      </h4>
 
+      <div className="space-y-6">
         {uzytkownicy.map(u => (
-          <div key={u.id} style={cardStyle}>
-            <strong>{u.imie}</strong>
-            <div>{u.email}</div>
-            <div>Rola: {u.rola}</div>
+          <Card key={u.id}>
+            <div className="space-y-1 mb-4">
+              <div className="font-semibold text-lg">
+                {u.imie}
+              </div>
+              <div className="text-sm opacity-80">
+                {u.email}
+              </div>
+              <div className="text-sm">
+                Rola: {u.rola}
+              </div>
+            </div>
 
-            <button
-              style={deleteStyle}
+            <Button
+              variant="danger"
               onClick={() => usunUzytkownika(u.id)}
             >
               Usuń
-            </button>
-          </div>
+            </Button>
+          </Card>
         ))}
+      </div>
 
-        <MenuButton text="Powrót" onClick={() => navigate(-1)} />
-      
-      </AppContainer>
+      <div className="mt-10">
+        <Button
+          variant="secondary"
+          onClick={() => navigate("/home")}
+        >
+          Powrót
+        </Button>
+      </div>
+
     </Layout>
   )
-}
-
-const cardStyle = {
-  border: "1px solid #ccc",
-  padding: "10px",
-  marginBottom: "10px"
-}
-
-const deleteStyle = {
-  marginTop: "5px",
-  backgroundColor: "#d32f2f",
-  color: "white",
-  border: "none",
-  padding: "6px 10px",
-  cursor: "pointer"
 }
 
 export default Admin

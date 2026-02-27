@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom"
 import { useZgloszenia } from "../context/ZgloszeniaContext"
 import { jsPDF } from "jspdf"
-import AppContainer from "../components/AppContainer"
-import MenuButton from "../components/MenuButton"
 import Layout from "../components/Layout"
+import Button from "../components/Button"
+import Card from "../components/Card"
 
 function Raport() {
   const navigate = useNavigate()
@@ -37,20 +37,19 @@ function Raport() {
     } else {
       zgloszenia.forEach((z, index) => {
         const link = `https://www.google.com/maps?q=${z.lat},${z.lng}`
-        
+
         doc.text(`Zgloszenie ${index + 1}`, 20, y)
         y += 6
         doc.text(`Tytul: ${normalize(z.tytul)}`, 20, y)
         y += 6
         doc.text(`Opis: ${normalize(z.opis)}`, 20, y)
         y += 6
-        
+
         doc.text("Lokalizacja (Google Maps):", 20, y)
         y += 6
 
-        // link
         doc.setTextColor(0, 0, 255)
-        doc.textWithLink(link, 20, y, {url: link})
+        doc.textWithLink(link, 20, y, { url: link })
         doc.setTextColor(0, 0, 0)
 
         y += 12
@@ -67,11 +66,29 @@ function Raport() {
 
   return (
     <Layout title="Generowanie raportu PDF">
-      <AppContainer>
-        
-        <MenuButton text="Generuj PDF" onClick={generujPDF} />
-        <MenuButton text="Powrót" onClick={() => navigate("/obiekty")} />
-      </AppContainer>
+      <Card>
+        <div className="space-y-6">
+
+          <div className="text-gray-600 dark:text-gray-300">
+            Wygeneruj raport PDF zawierający wszystkie zgłoszenia
+            wraz z linkiem do lokalizacji w Google Maps.
+          </div>
+
+          <div className="flex gap-4">
+            <Button variant="primary" onClick={generujPDF}>
+              Generuj PDF
+            </Button>
+
+            <Button
+              variant="secondary"
+              onClick={() => navigate("/obiekty")}
+            >
+              Powrót
+            </Button>
+          </div>
+
+        </div>
+      </Card>
     </Layout>
   )
 }

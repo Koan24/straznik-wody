@@ -1,73 +1,49 @@
 import { useNavigate } from "react-router-dom"
 import { useTheme } from "../context/ThemeContext"
 
-function Layout({ children, title }) {
+function Layout({ children, title, showHomeButton = true }) {
   const navigate = useNavigate()
   const { theme, toggleTheme } = useTheme()
 
   return (
-    <div style={wrapperStyle(theme)}>
-      <header style={headerStyle}>
-        <h3 style={{ margin: 0 }}>{title}</h3>
+    <div className="min-h-screen bg-background dark:bg-darkbg transition-colors duration-300">
+      
+      <header className="flex justify-between items-center px-8 py-5 border-b border-gray-200 dark:border-gray-700">
+        
+        <div className="flex items-center gap-3">
+          <span className="text-xl">🌊</span>
+          <h1 className="text-lg font-semibold text-primary dark:text-water">
+            Strażnik Wody
+          </h1>
+        </div>
 
-        <div>
-          <button
-            style={homeButton}
-            onClick={() => navigate("/home")}
-          >
-            Strona główna
-          </button>
+        <div className="flex items-center gap-3">
+          {showHomeButton && (
+            <button
+              onClick={() => navigate("/home")}
+              className="px-4 py-2 rounded-lg border border-primary text-primary hover:bg-primary hover:text-white transition"
+            >
+              Strona główna
+            </button>
+          )}
 
           <button
-            style={themeButton}
             onClick={toggleTheme}
+            className="px-4 py-2 rounded-lg border border-gray-400 dark:border-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
           >
-            {theme === "light" ? "🌙 Dark" : "☀ Light"}
+            {theme === "light" ? "🌙" : "☀"}
           </button>
         </div>
       </header>
 
-      <div style={contentStyle}>
+      <main className="max-w-5xl mx-auto px-6 py-8">
+        <h2 className="text-2xl font-bold mb-8 text-gray-800 dark:text-gray-100">
+          {title}
+        </h2>
         {children}
-      </div>
+      </main>
     </div>
   )
-}
-
-const wrapperStyle = (theme) => ({
-  minHeight: "100vh",
-  backgroundColor: theme === "light" ? "#f4f6f8" : "#0f172a",
-  color: theme === "light" ? "#000" : "#fff"
-})
-
-const headerStyle = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  padding: "15px 20px",
-  backgroundColor: "#1e293b",
-  color: "white"
-}
-
-const homeButton = {
-  backgroundColor: "#3b82f6",
-  border: "none",
-  padding: "6px 12px",
-  color: "white",
-  cursor: "pointer"
-}
-
-const themeButton = {
-  marginLeft: "10px",
-  backgroundColor: "#10b981",
-  border: "none",
-  padding: "6px 12px",
-  color: "white",
-  cursor: "pointer"
-}
-
-const contentStyle = {
-  padding: "20px"
 }
 
 export default Layout

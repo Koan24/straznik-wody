@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useUzytkownicy } from "../context/UzytkownicyContext"
-import AppContainer from "../components/AppContainer"
-import MenuButton from "../components/MenuButton"
 import Layout from "../components/Layout"
+import Button from "../components/Button"
+import Card from "../components/Card"
 
 function DodajUzytkownika() {
   const [imie, setImie] = useState("")
@@ -32,43 +32,52 @@ function DodajUzytkownika() {
 
   return (
     <Layout title="Nowy użytkownik">
-      <AppContainer>
 
-        <input
-          placeholder="Imię"
-          value={imie}
-          onChange={e => setImie(e.target.value)}
-          style={inputStyle}
-        />
+      <Card>
+        <div className="space-y-5">
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          style={inputStyle}
-        />
+          <input
+            placeholder="Imię"
+            value={imie}
+            onChange={e => setImie(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition"
+          />
 
-        <select
-          value={rola}
-          onChange={e => setRola(e.target.value)}
-          style={inputStyle}
-        >
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-        </select>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition"
+          />
 
-        <MenuButton text="Zapisz" onClick={handleSubmit} />
-        <MenuButton text="Powrót" onClick={() => navigate("/admin")} />
-      </AppContainer>
+          <select
+            value={rola}
+            onChange={e => setRola(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition"
+          >
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+
+          <div className="flex gap-4 pt-2">
+            <Button variant="primary" onClick={handleSubmit}>
+              Zapisz
+            </Button>
+
+            <Button
+              variant="secondary"
+              onClick={() => navigate("/admin")}
+            >
+              Powrót
+            </Button>
+          </div>
+
+        </div>
+      </Card>
+
     </Layout>
   )
-}
-
-const inputStyle = {
-  width: "100%",
-  padding: "10px",
-  marginBottom: "10px"
 }
 
 export default DodajUzytkownika

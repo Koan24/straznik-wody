@@ -1,18 +1,15 @@
 import { useParams, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
 import { useZgloszenia } from "../context/ZgloszeniaContext"
-import AppContainer from "../components/AppContainer"
-import MenuButton from "../components/MenuButton"
+import Button from "../components/Button"
+import Card from "../components/Card"
 import Layout from "../components/Layout"
 
 function EdycjaZgloszenia() {
-  const { id } = useParams() 
+  const { id } = useParams()
   const navigate = useNavigate()
 
   const { zgloszenia, aktualizujZgloszenie } = useZgloszenia()
-
-  console.log("Param id:", id)
-  console.log("Zgloszenia:", zgloszenia)
 
   const zgloszenie = zgloszenia.find(z => String(z.id) === id)
 
@@ -39,42 +36,82 @@ function EdycjaZgloszenia() {
   }
 
   if (!zgloszenie) {
-    return <div>Nie znaleziono zgłoszenia</div>
+    return (
+      <Layout title="Błąd">
+        <div className="text-red-500">
+          Nie znaleziono zgłoszenia
+        </div>
+      </Layout>
+    )
   }
 
   return (
     <Layout title="Edycja zgłoszenia">
-      <AppContainer>
 
-        <input
-          value={tytul}
-          onChange={e => setTytul(e.target.value)}
-          style={inputStyle}
-        />
+      <Card>
+        <div className="space-y-6">
 
-        <input
-          value={lokalizacja}
-          onChange={e => setLokalizacja(e.target.value)}
-          style={inputStyle}
-        />
+          <input
+            value={tytul}
+            onChange={e => setTytul(e.target.value)}
+            placeholder="Tytuł"
+            className="
+              w-full px-4 py-3 rounded-lg
+              border border-gray-300 dark:border-gray-600
+              bg-white dark:bg-slate-900
+              text-gray-800 dark:text-gray-100
+              focus:outline-none focus:ring-2 focus:ring-primary
+              transition
+            "
+          />
 
-        <textarea
-          value={opis}
-          onChange={e => setOpis(e.target.value)}
-          style={inputStyle}
-        />
+          <input
+            value={lokalizacja}
+            onChange={e => setLokalizacja(e.target.value)}
+            placeholder="Lokalizacja"
+            className="
+              w-full px-4 py-3 rounded-lg
+              border border-gray-300 dark:border-gray-600
+              bg-white dark:bg-slate-900
+              text-gray-800 dark:text-gray-100
+              focus:outline-none focus:ring-2 focus:ring-primary
+              transition
+            "
+          />
 
-        <MenuButton text="Zapisz zmiany" onClick={handleSave} />
-        <MenuButton text="Powrót" onClick={() => navigate(-1)} />
-      </AppContainer>
+          <textarea
+            value={opis}
+            onChange={e => setOpis(e.target.value)}
+            placeholder="Opis"
+            rows={4}
+            className="
+              w-full px-4 py-3 rounded-lg
+              border border-gray-300 dark:border-gray-600
+              bg-white dark:bg-slate-900
+              text-gray-800 dark:text-gray-100
+              focus:outline-none focus:ring-2 focus:ring-primary
+              transition
+            "
+          />
+
+          <div className="flex gap-4 pt-2">
+            <Button variant="primary" onClick={handleSave}>
+              Zapisz zmiany
+            </Button>
+
+            <Button
+              variant="secondary"
+              onClick={() => navigate("/obiekty/lista")}
+            >
+              Powrót
+            </Button>
+          </div>
+
+        </div>
+      </Card>
+
     </Layout>
   )
-}
-
-const inputStyle = {
-  width: "100%",
-  padding: "10px",
-  marginBottom: "10px"
 }
 
 export default EdycjaZgloszenia

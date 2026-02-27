@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom"
 import { useZgloszenia } from "../context/ZgloszeniaContext"
-import AppContainer from "../components/AppContainer"
-import MenuButton from "../components/MenuButton"
 import Layout from "../components/Layout"
+import Button from "../components/Button"
+import Card from "../components/Card"
 
 function ListaZgloszen() {
   const navigate = useNavigate()
@@ -10,61 +10,58 @@ function ListaZgloszen() {
 
   return (
     <Layout title="Lista zgłoszeń">
-      <AppContainer>
-      
-        {zgloszenia.length === 0 && <div>Brak zgłoszeń</div>}
 
+      {zgloszenia.length === 0 && (
+        <div className="text-gray-600 dark:text-gray-300">
+          Brak zgłoszeń
+        </div>
+      )}
+
+      <div className="space-y-6">
         {zgloszenia.map(z => (
-          <div key={z.id} style={cardStyle}>
-            <strong>{z.tytul}</strong>
-            <div>{z.lokalizacja}</div>
-            <div>{z.opis}</div>
+          <Card key={z.id}>
+            <div className="space-y-2 mb-4">
+              <div className="font-semibold text-lg">
+                {z.tytul}
+              </div>
+              <div className="text-sm opacity-80">
+                {z.lokalizacja}
+              </div>
+              <div>
+                {z.opis}
+              </div>
+            </div>
 
-            <button
-              style={deleteButtonStyle}
-              onClick={() => usunZgloszenie(z.id)}
-            >
-              Usuń
-            </button>
+            <div className="flex gap-3">
+              <Button
+                variant="danger"
+                onClick={() => usunZgloszenie(z.id)}
+              >
+                Usuń
+              </Button>
 
-            <button
-            style={editButtonStyle}
-            onClick={() => navigate(`/obiekty/edycja/${z.id}`)}
-            >
-              Edytuj
-            </button>
-          </div>
+              <Button
+                variant="secondary"
+                onClick={() => navigate(`/obiekty/edycja/${z.id}`)}
+              >
+                Edytuj
+              </Button>
+            </div>
+          </Card>
         ))}
+      </div>
 
-        <MenuButton text="Powrót" onClick={() => navigate("/obiekty")} />
-      </AppContainer>
+      <div className="mt-8">
+        <Button
+          variant="secondary"
+          onClick={() => navigate("/obiekty")}
+        >
+          Powrót
+        </Button>
+      </div>
+
     </Layout>
   )
-}
-
-const cardStyle = {
-  border: "1px solid #ccc",
-  padding: "10px",
-  marginBottom: "10px"
-}
-
-const deleteButtonStyle = {
-  marginTop: "8px",
-  backgroundColor: "#d32f2f",
-  color: "white",
-  border: "none",
-  padding: "6px 10px",
-  cursor: "pointer"
-}
-
-const editButtonStyle = {
-  marginTop: "5px",
-  marginLeft: "5px",
-  backgroundColor: "#1976d2",
-  color: "white",
-  border: "none",
-  padding: "6px 10px",
-  cursor: "pointer"
 }
 
 export default ListaZgloszen

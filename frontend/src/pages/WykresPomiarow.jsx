@@ -11,8 +11,9 @@ import {
   Tooltip,
   Legend
 } from "chart.js"
-import AppContainer from "../components/AppContainer"
-import MenuButton from "../components/MenuButton"
+import Layout from "../components/Layout"
+import Button from "../components/Button"
+import Card from "../components/Card"
 
 ChartJS.register(
   CategoryScale,
@@ -34,24 +35,38 @@ function WykresPomiarow() {
       {
         label: "Poziom wody (cm)",
         data: pomiary.map(p => p.wartosc),
-        borderColor: "blue",
-        backgroundColor: "rgba(0, 0, 255, 0.2)",
+        borderColor: "#0ea5e9",
+        backgroundColor: "rgba(14,165,233,0.2)",
+        tension: 0.3
       },
     ],
   }
 
   return (
-    <AppContainer>
-      <h2>Wykres poziomu wody</h2>
+    <Layout title="Wykres poziomu wody">
 
-      {pomiary.length === 0 ? (
-        <div>Brak danych do wyświetlenia</div>
-      ) : (
-        <Line data={data} />
-      )}
+      <Card>
 
-      <MenuButton text="Powrót" onClick={() => navigate(-1)} />
-    </AppContainer>
+        {pomiary.length === 0 ? (
+          <div className="text-gray-600 dark:text-gray-300">
+            Brak danych do wyświetlenia
+          </div>
+        ) : (
+          <Line data={data} />
+        )}
+
+        <div className="mt-6">
+          <Button
+            variant="secondary"
+            onClick={() => navigate("/wodowskazy")}
+          >
+            Powrót
+          </Button>
+        </div>
+
+      </Card>
+
+    </Layout>
   )
 }
 

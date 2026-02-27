@@ -1,50 +1,61 @@
 import { useNavigate } from "react-router-dom"
 import { useWodowskazy } from "../context/WodowskazyContext"
-import AppContainer from "../components/AppContainer"
-import MenuButton from "../components/MenuButton"
+import Layout from "../components/Layout"
+import Button from "../components/Button"
+import Card from "../components/Card"
 
 function ArchiwumPomiarow() {
   const navigate = useNavigate()
   const { pomiary, usunPomiar } = useWodowskazy()
 
   return (
-    <AppContainer>
-      <h2>Archiwum pomiarów</h2>
+    <Layout title="Archiwum pomiarów">
 
-      {pomiary.length === 0 && <div>Brak zapisanych pomiarów</div>}
+      <div className="space-y-6">
 
-      {pomiary.map(p => (
-        <div key={p.id} style={cardStyle}>
-          <strong>{p.wartosc} cm</strong>
-          <div>{p.data}</div>
+        {pomiary.length === 0 && (
+          <Card>
+            <div className="text-gray-600 dark:text-gray-300">
+              Brak zapisanych pomiarów
+            </div>
+          </Card>
+        )}
 
-          <button
-            style={deleteButtonStyle}
-            onClick={() => usunPomiar(p.id)}
-          >
-            Usuń
-          </button>
-        </div>
-      ))}
+        {pomiary.map(p => (
+          <Card key={p.id}>
+            <div className="flex justify-between items-center">
 
-      <MenuButton text="Powrót" onClick={() => navigate(-1)} />
-    </AppContainer>
+              <div>
+                <div className="font-semibold">
+                  {p.wartosc} cm
+                </div>
+                <div className="text-sm text-gray-600 dark:text-gray-300">
+                  {p.data}
+                </div>
+              </div>
+
+              <Button
+                variant="danger"
+                onClick={() => usunPomiar(p.id)}
+              >
+                Usuń
+              </Button>
+
+            </div>
+          </Card>
+        ))}
+
+        <Button
+          variant="secondary"
+          onClick={() => navigate("/wodowskazy")}
+        >
+          Powrót
+        </Button>
+
+      </div>
+
+    </Layout>
   )
-}
-
-const cardStyle = {
-  border: "1px solid #ccc",
-  padding: "10px",
-  marginBottom: "10px"
-}
-
-const deleteButtonStyle = {
-  marginTop: "8px",
-  backgroundColor: "#d32f2f",
-  color: "white",
-  border: "none",
-  padding: "6px 10px",
-  cursor: "pointer"
 }
 
 export default ArchiwumPomiarow

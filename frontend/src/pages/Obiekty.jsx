@@ -1,39 +1,54 @@
 import { useNavigate } from "react-router-dom"
-import AppContainer from "../components/AppContainer"
-import MenuButton from "../components/MenuButton"
+import Layout from "../components/Layout"
+import Button from "../components/Button"
+import Card from "../components/Card"
 
 function Obiekty() {
   const navigate = useNavigate()
 
   return (
-    <AppContainer>
-      <h2>Obiekty hydrotechniczne</h2>
+    <Layout title="Obiekty hydrotechniczne">
+      <Card>
+        <div className="space-y-6">
 
-      <MenuButton
-        text="Zgłoś usterkę"
-        onClick={() => navigate("/obiekty/zgloszenie")}
-      />
+          <Button
+            variant="primary"
+            onClick={() => navigate("/obiekty/zgloszenie")}
+          >
+            Zgłoś usterkę
+          </Button>
 
-      <MenuButton
-        text="Lista zgłoszeń"
-        onClick={() => navigate("/obiekty/lista")}
-      />
+          <Button
+            variant="primary"
+            onClick={() => navigate("/obiekty/lista")}
+          >
+            Lista zgłoszeń
+          </Button>
 
-      <MenuButton
-        text="Mapa zgłoszeń"
-        onClick={() => navigate("/obiekty/mapa")}
-      />
+          <Button
+            variant="primary"
+            onClick={() => navigate("/obiekty/mapa")}
+          >
+            Mapa zgłoszeń
+          </Button>
 
-      <MenuButton
-        text="Generuj raport PDF"
-        onClick={() => navigate("/obiekty/raport")}
-      />
+          <Button
+            variant="primary"
+            onClick={() => navigate("/obiekty/raport")}
+          >
+            Generuj raport PDF
+          </Button>
 
-      <MenuButton
-        text="Powrót"
-        onClick={() => navigate("/home")}
-      />
-    </AppContainer>
+          <Button
+            variant="secondary"
+            onClick={() => navigate("/home")}
+          >
+            Powrót
+          </Button>
+
+        </div>
+      </Card>
+    </Layout>
   )
 }
 

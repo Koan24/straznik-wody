@@ -12,8 +12,9 @@ import {
   Tooltip,
   Legend
 } from "chart.js"
-import AppContainer from "../components/AppContainer"
-import MenuButton from "../components/MenuButton"
+import Layout from "../components/Layout"
+import Button from "../components/Button"
+import Card from "../components/Card"
 
 ChartJS.register(
   CategoryScale,
@@ -31,11 +32,18 @@ function SzczegolyWodowskazu() {
   const { wodowskazy, dodajPomiar } = useWodowskazy()
 
   const wodowskaz = wodowskazy.find(w => String(w.id) === id)
-
   const [wartosc, setWartosc] = useState("")
 
   if (!wodowskaz) {
-    return <div>Nie znaleziono wodowskazu</div>
+    return (
+      <Layout title="Błąd">
+        <Card>
+          <div className="text-gray-600 dark:text-gray-300">
+            Nie znaleziono wodowskazu
+          </div>
+        </Card>
+      </Layout>
+    )
   }
 
   const handleAdd = () => {
@@ -54,45 +62,78 @@ function SzczegolyWodowskazu() {
       {
         label: "Poziom wody (cm)",
         data: wodowskaz.pomiary.map(p => p.wartosc),
-        borderColor: "blue",
-        backgroundColor: "rgba(0, 0, 255, 0.2)",
+        borderColor: "#0ea5e9",
+        backgroundColor: "rgba(14,165,233,0.2)",
+        tension: 0.3
       },
     ],
   }
 
   return (
-    <AppContainer>
-      <h2>{wodowskaz.nazwa}</h2>
+    <Layout title={wodowskaz.nazwa}>
 
-      <h4>Dodaj pomiar</h4>
+      <div className="space-y-8">
 
-      <input
-        type="number"
-        placeholder="Poziom wody (cm)"
-        value={wartosc}
-        onChange={e => setWartosc(e.target.value)}
-        style={inputStyle}
-      />
+        {/* Sekcja dodawania pomiaru */}
+        <Card>
+          <div className="space-y-4">
 
-      <MenuButton text="Dodaj pomiar" onClick={handleAdd} />
+            <div className="font-semibold">
+              Dodaj pomiar
+            </div>
 
-      <h4>Wykres</h4>
+            <input
+              type="number"
+              placeholder="Poziom wody (cm)"
+              value={wartosc}
+              onChange={(e) => setWartosc(e.target.value)}
+              className="
+                w-full px-4 py-3 rounded-lg
+                border border-gray-300 dark:border-gray-600
+                bg-white dark:bg-slate-900
+                text-gray-800 dark:text-gray-100
+                focus:outline-none focus:ring-2 focus:ring-primary
+                transition
+              "
+            />
 
-      {wodowskaz.pomiary.length === 0 ? (
-        <div>Brak pomiarów</div>
-      ) : (
-        <Line data={data} />
-      )}
+            <Button variant="primary" onClick={handleAdd}>
+              Dodaj pomiar
+            </Button>
 
-      <MenuButton text="Powrót" onClick={() => navigate("/wodowskazy/mapa")} />
-    </AppContainer>
+          </div>
+        </Card>
+
+        {/* Sekcja wykresu */}
+        <Card>
+          <div className="space-y-4">
+
+            <div className="font-semibold">
+              Wykres poziomu wody
+            </div>
+
+            {wodowskaz.pomiary.length === 0 ? (
+              <div className="text-gray-600 dark:text-gray-300">
+                Brak pomiarów
+              </div>
+            ) : (
+              <Line data={data} />
+            )}
+
+          </div>
+        </Card>
+
+        <Button
+          variant="secondary"
+          onClick={() => navigate("/wodowskazy/mapa")}
+        >
+          Powrót
+        </Button>
+
+      </div>
+
+    </Layout>
   )
-}
-
-const inputStyle = {
-  width: "100%",
-  padding: "10px",
-  marginBottom: "10px"
 }
 
 export default SzczegolyWodowskazu

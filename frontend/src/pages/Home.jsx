@@ -1,34 +1,51 @@
 import { useNavigate } from "react-router-dom"
-import AppContainer from "../components/AppContainer"
-import MenuButton from "../components/MenuButton"
+import Button from "../components/Button"
 
 function Home() {
   const navigate = useNavigate()
 
   return (
-    <AppContainer>
-      <h2>Strona główna</h2>
+    <div className="min-h-screen flex items-center justify-center bg-background dark:bg-darkbg transition-colors duration-300">
+      
+      <div className="bg-white dark:bg-slate-800 p-10 rounded-2xl shadow-card border border-gray-200 dark:border-gray-700 w-full max-w-md">
+        
+        <div className="text-center mb-8">
+          <div className="text-4xl mb-3">🌊</div>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Strażnik Wody
+          </h1>
+          <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+            System monitoringu infrastruktury wodnej
+          </div>
+        </div>
 
-      <MenuButton
-        text="Obiekty hydrotechniczne"
-        onClick={() => navigate("/obiekty")}
-      />
+        <div className="space-y-4">
+          
+          <Button
+            variant="primary"
+            onClick={() => navigate("/obiekty")}
+          >
+            Obiekty hydrotechniczne
+          </Button>
 
-      <MenuButton
-        text="Wodowskazy"
-        onClick={() => navigate("/wodowskazy")}
-      />
+          <Button
+            variant="primary"
+            onClick={() => navigate("/wodowskazy")}
+          >
+            Wodowskazy
+          </Button>
 
-      <MenuButton
-        text="Panel administratora"
-        onClick={() => navigate("/admin")}
-      />
+          <Button
+            variant="secondary"
+            onClick={() => navigate("/admin")}
+          >
+            Panel administratora
+          </Button>
 
-      <MenuButton
-        text="Wyloguj"
-        onClick={() => navigate("/")}
-      />
-    </AppContainer>
+        </div>
+
+      </div>
+    </div>
   )
 }
 

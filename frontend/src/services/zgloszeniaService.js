@@ -1,10 +1,37 @@
-const STORAGE_KEY = "zgloszenia"
+const API_URL = "http://localhost:4000"
 
-export function getZgloszenia() {
-  const data = localStorage.getItem(STORAGE_KEY)
-  return data ? JSON.parse(data) : []
+function getAuthHeader() {
+  const token = localStorage.getItem("token")
+  return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
-export function saveZgloszenia(zgloszenia) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(zgloszenia))
+export async function getZgloszenia() {
+  const res = await fetch(`${API_URL}/api/zgloszenia`)
+  return res.ok ? res.json() : []
+}
+
+export async function createZgloszenie(data) {
+  const res = await fetch(`${API_URL}/api/zgloszenia`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...getAuthHeader() },
+    body: JSON.stringify(data)
+  })
+  return res.ok ? res.json() : null
+}
+
+export async function updateZgloszenie(id, data) {
+  const res = await fetch(`${API_URL}/api/zgloszenia/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...getAuthHeader() },
+    body: JSON.stringify(data)
+  })
+  return res.ok ? res.json() : null
+}
+
+export async function deleteZgloszenie(id) {
+  const res = await fetch(`${API_URL}/api/zgloszenia/${id}`, {
+    method: "DELETE",
+    headers: getAuthHeader()
+  })
+  return res.ok
 }

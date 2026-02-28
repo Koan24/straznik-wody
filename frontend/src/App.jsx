@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom"
+import { AuthProvider } from "./context/AuthContext"
 
 import Login from "./pages/Login"
 import Register from "./pages/Register"
@@ -27,28 +28,30 @@ import DodajUzytkownika from "./pages/DodajUzytkownika"
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/home" element={<Home />} />
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/home" element={<Home />} />
 
-      <Route path="/obiekty" element={<Obiekty />} />
-      <Route path="/obiekty/zgloszenie" element={<Zgloszenie />} />
-      <Route path="/obiekty/lista" element={<ListaZgloszen />} />
-      <Route path="/obiekty/edycja/:id" element={<EdycjaZgloszenia />} />
-      <Route path="/obiekty/mapa" element={<MapaZgloszen />} />
-      <Route path="/obiekty/raport" element={<Raport />} />
+        <Route path="/obiekty" element={<Obiekty />} />
+        <Route path="/obiekty/zgloszenie" element={<Zgloszenie />} />
+        <Route path="/obiekty/lista" element={<ListaZgloszen />} />
+        <Route path="/obiekty/edycja/:id" element={<EdycjaZgloszenia />} />
+        <Route path="/obiekty/mapa" element={<MapaZgloszen />} />
+        <Route path="/obiekty/raport" element={<Raport />} />
 
-      <Route path="/wodowskazy" element={<Wodowskazy />} />
-      <Route path="/wodowskazy/dodaj" element={<DodajWodowskaz />} />
-      <Route path="/wodowskazy/mapa" element={<MapaWodowskazow />} />
-      <Route path="/wodowskazy/:id" element={<SzczegolyWodowskazu />} />
-      <Route path="/wodowskazy/archiwum" element={<ArchiwumPomiarow />} />
-      <Route path="/wodowskazy/wykres" element={<WykresPomiarow />} />
+        <Route path="/wodowskazy" element={<Wodowskazy />} />
+        <Route path="/wodowskazy/dodaj" element={<DodajWodowskaz />} />
+        <Route path="/wodowskazy/mapa" element={<MapaWodowskazow />} />
+        <Route path="/wodowskazy/:id" element={<SzczegolyWodowskazu />} />
+        <Route path="/wodowskazy/archiwum" element={<ArchiwumPomiarow />} />
+        <Route path="/wodowskazy/wykres" element={<WykresPomiarow />} />
 
-      <Route path="/admin" element={<Admin />} />
-      <Route path="/admin/dodaj" element={<DodajUzytkownika />} />
-    </Routes>
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin/dodaj" element={<DodajUzytkownika />} />
+      </Routes>
+    </AuthProvider>
   )
 }
 

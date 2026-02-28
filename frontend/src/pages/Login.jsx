@@ -2,24 +2,33 @@ import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import Button from "../components/Button"
 import { useToast } from "../context/ToastContext"
+import { useAuth } from "../context/AuthContext"
 
 function Login() {
   const navigate = useNavigate()
+  const { login } = useAuth()
 
   const [email, setEmail] = useState("")
   const [haslo, setHaslo] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const {addToast} = useToast()
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !haslo) {
       addToast("Wypełnij wszystkie pola", "error")
       return
     }
 
-    addToast("Zalogowano pomyślnie", "success")
-    
-    navigate("/home")
+    setLoading(true)
+    try {
+      await login(email, haslo)
+      addToast("Zalogowano pomyślnie", "success")
+      navigate("/home")
+    } catch (e) {
+      addToast(e.message || "Błąd logowania", "error")
+    }
+    setLoading(false)
   }
 
   return (
@@ -62,8 +71,8 @@ function Login() {
             "
           />
 
-          <Button variant="primary" onClick={handleLogin}>
-            Zaloguj
+          <Button variant="primary" onClick={handleLogin} disabled={loading}>
+            {loading ? "Logowanie..." : "Zaloguj"}
           </Button>
 
           <Button

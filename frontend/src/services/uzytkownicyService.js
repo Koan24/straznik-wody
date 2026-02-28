@@ -1,15 +1,11 @@
-const STORAGE_KEY = "uzytkownicy"
+const API_URL = "http://localhost:4000"
 
-export function getUzytkownicy() {
-  const data = localStorage.getItem(STORAGE_KEY)
-  return data
-    ? JSON.parse(data)
-    : [
-        { id: 1, imie: "Admin", email: "admin@test.pl", rola: "admin" },
-        { id: 2, imie: "User", email: "user@test.pl", rola: "user" }
-      ]
+export async function getUzytkownicy() {
+  const res = await fetch(`${API_URL}/api/uzytkownicy`)
+  return res.ok ? res.json() : []
 }
 
-export function saveUzytkownicy(uzytkownicy) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(uzytkownicy))
+export async function getUzytkownik(id) {
+  const res = await fetch(`${API_URL}/api/uzytkownicy/${id}`)
+  return res.ok ? res.json() : null
 }

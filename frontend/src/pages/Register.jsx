@@ -2,24 +2,25 @@ import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import Button from "../components/Button"
 import { useToast } from "../context/ToastContext"
+import { useAuth } from "../context/AuthContext"
 
 function Register() {
   const navigate = useNavigate()
+  const { register } = useAuth()
 
   const [imie, setImie] = useState("")
-  const [nazwisko, setNazwisko] = useState("")
   const [email, setEmail] = useState("")
   const [haslo, setHaslo] = useState("")
+  const [loading, setLoading] = useState(false)
 
   const {addToast} = useToast()
 
   const [errors, setErrors] = useState({})
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     const newErrors = {}
 
     if (!imie.trim()) newErrors.imie = "Podaj imię"
-    if (!nazwisko.trim()) newErrors.nazwisko = "Podaj nazwisko"
 
     if (!email.trim()) {
       newErrors.email = "Podaj email"
@@ -43,8 +44,15 @@ function Register() {
       return
     }
 
-    addToast("Rejestracja zakończona sukcesem", "success")
-    navigate("/")
+    setLoading(true)
+    try {
+      await register(imie, email, haslo)
+      addToast("Rejestracja zakończona sukcesem", "success")
+      navigate("/")
+    } catch (e) {
+      addToast(e.message || "Błąd rejestracji", "error")
+    }
+    setLoading(false)
   }
 
   return (
@@ -73,23 +81,6 @@ function Register() {
           />
           {errors.imie && (
             <p className="text-sm text-red-500 mt-1">{errors.imie}</p>
-          )}
-
-          <input
-            placeholder="Nazwisko"
-            value={nazwisko}
-            onChange={(e) => {
-              setNazwisko(e.target.value)
-              setErrors(prev => ({ ...prev, nazwisko: null }))
-            }}
-            className={`w-full px-4 py-3 rounded-lg border ${
-              errors.nazwisko
-                ? "border-red-500"
-                : "border-gray-300 dark:border-gray-600"
-            } bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition`}
-          />
-          {errors.nazwisko && (
-            <p className="text-sm text-red-500 mt-1">{errors.nazwisko}</p>
           )}
 
           <input
@@ -128,8 +119,8 @@ function Register() {
             <p className="text-sm text-red-500 mt-1">{errors.haslo}</p>
           )}
 
-          <Button variant="primary" onClick={handleRegister}>
-            Zarejestruj
+          <Button variant="primary" onClick={handleRegister} disabled={loading}>
+            {loading ? "Rejestracja..." : "Zarejestruj"}
           </Button>
 
           <Button

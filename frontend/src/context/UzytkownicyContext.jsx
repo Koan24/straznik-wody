@@ -1,14 +1,21 @@
 import { createContext, useContext, useState, useEffect } from "react"
-import { getUzytkownicy, saveUzytkownicy } from "../services/uzytkownicyService"
+import { getUzytkownicy, getUzytkownik } from "../services/uzytkownicyService"
 
 const UzytkownicyContext = createContext()
 
 export function UzytkownicyProvider({ children }) {
-  const [uzytkownicy, setUzytkownicy] = useState(() => getUzytkownicy())
+  const [uzytkownicy, setUzytkownicy] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    saveUzytkownicy(uzytkownicy)
-  }, [uzytkownicy])
+    getUzytkownicy().then(data => {
+      setUzytkownicy(data || [])
+      setLoading(false)
+    }).catch(err => {
+      console.error('Failed to load uzytkownicy:', err)
+      setLoading(false)
+    })
+  }, [])
 
   const dodajUzytkownika = (imie, email, rola) => {
     setUzytkownicy(prev => [
@@ -25,7 +32,8 @@ export function UzytkownicyProvider({ children }) {
     <UzytkownicyContext.Provider value={{
       uzytkownicy,
       dodajUzytkownika,
-      usunUzytkownika
+      usunUzytkownika,
+      loading
     }}>
       {children}
     </UzytkownicyContext.Provider>

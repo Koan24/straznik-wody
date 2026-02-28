@@ -1,51 +1,106 @@
 import { useNavigate } from "react-router-dom"
+import { useZgloszenia } from "../context/ZgloszeniaContext"
+import { useWodowskazy } from "../context/WodowskazyContext"
+import Layout from "../components/Layout"
+import Card from "../components/Card"
 import Button from "../components/Button"
+import { motion } from "framer-motion"
+
+function AnimatedNumber({ value }) {
+  return (
+    <motion.span
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="text-4xl font-bold text-primary dark:text-water"
+    >
+      {value}
+    </motion.span>
+  )
+}
 
 function Home() {
   const navigate = useNavigate()
+  const { zgloszenia } = useZgloszenia()
+  const { wodowskazy } = useWodowskazy()
+
+  const ostatnieZgloszenie =
+    zgloszenia.length > 0
+      ? zgloszenia[zgloszenia.length - 1]
+      : null
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background dark:bg-darkbg transition-colors duration-300">
+    <Layout title="Panel systemu" showHomeButton={false}>
       
-      <div className="bg-white dark:bg-slate-800 p-10 rounded-2xl shadow-card border border-gray-200 dark:border-gray-700 w-full max-w-md">
-        
-        <div className="text-center mb-8">
-          <div className="text-4xl mb-3">🌊</div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-            Strażnik Wody
-          </h1>
-          <div className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-            System monitoringu infrastruktury wodnej
+      <div className="grid md:grid-cols-3 gap-6 mb-10">
+
+        <Card>
+          <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+            Liczba zgłoszeń
           </div>
-        </div>
+          <AnimatedNumber value={zgloszenia.length} />
+        </Card>
 
-        <div className="space-y-4">
-          
-          <Button
-            variant="primary"
-            onClick={() => navigate("/obiekty")}
-          >
-            Obiekty hydrotechniczne
-          </Button>
+        <Card>
+          <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+            Liczba wodowskazów
+          </div>
+          <AnimatedNumber value={wodowskazy.length} />
+        </Card>
 
-          <Button
-            variant="primary"
-            onClick={() => navigate("/wodowskazy")}
-          >
-            Wodowskazy
-          </Button>
-
-          <Button
-            variant="secondary"
-            onClick={() => navigate("/admin")}
-          >
-            Panel administratora
-          </Button>
-
-        </div>
+        <Card>
+          <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+            Status systemu
+          </div>
+          <div className="text-green-500 font-semibold">
+            Aktywny
+          </div>
+        </Card>
 
       </div>
-    </div>
+
+      <Card>
+        <div className="space-y-4">
+
+          <div className="font-semibold text-lg">
+            Ostatnie zgłoszenie
+          </div>
+
+          {ostatnieZgloszenie ? (
+            <div>
+              <div className="font-medium">
+                {ostatnieZgloszenie.tytul}
+              </div>
+              <div className="text-gray-600 dark:text-gray-400">
+                {ostatnieZgloszenie.opis}
+              </div>
+            </div>
+          ) : (
+            <div className="text-gray-500">
+              Brak zgłoszeń
+            </div>
+          )}
+
+          <div className="flex gap-4 pt-4">
+            <Button
+              variant="primary"
+              onClick={() => navigate("/obiekty")}
+            >
+              Przejdź do obiektów
+            </Button>
+
+            <Button
+              variant="secondary"
+              onClick={() => navigate("/wodowskazy")}
+            >
+              Przejdź do wodowskazów
+            </Button>
+          </div>
+
+        </div>
+      </Card>
+
+    </Layout>
   )
 }
 

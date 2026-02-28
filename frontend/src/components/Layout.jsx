@@ -34,6 +34,14 @@ function Layout({ children, title, showHomeButton = true }) {
           >
             {theme === "light" ? "🌙" : "☀"}
           </button>
+
+          <button
+            onClick={() => navigate("/")}
+            className="px-4 py-2 rounded-lg border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200"
+          >
+            Wyloguj
+          </button>
+
         </div>
       </header>
 

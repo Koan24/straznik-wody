@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom"
+import { data, useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { useZgloszenia } from "../context/ZgloszeniaContext"
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet"
@@ -25,16 +25,36 @@ function Zgloszenie() {
   const [opis, setOpis] = useState("")
   const [lat, setLat] = useState(null)
   const [lng, setLng] = useState(null)
+  const [typObiektu, setTypObiektu] = useState("")
+  const [rodzajUszkodzenia, setRodzajUszkodzenia] = useState("")
+  const [stopien, setStopien] = useState("")
 
   const {addToast} = useToast()
 
   const handleSubmit = () => {
-    if (!tytul || !opis || lat === null || lng === null) {
+    if (
+      !tytul || 
+      !opis ||
+      !typObiektu ||
+      !rodzajUszkodzenia ||
+      !stopien || 
+      lat === null || 
+      lng === null
+    ) {
       addToast("Wypełnij wszystkie pola i kliknij lokalizację na mapie", "error")
       return
     }
 
-    dodajZgloszenie({ tytul, opis, lat, lng })
+    dodajZgloszenie({ 
+      tytul,
+      opis,
+      typObiektu,
+      rodzajUszkodzenia,
+      stopien: Number(stopien),
+      lat,
+      lng,
+      data: new Date().toISOString()
+    })
     addToast("Pomiar dodany poprawnie", "success")
     navigate("/obiekty/lista")
   }
@@ -58,6 +78,45 @@ function Zgloszenie() {
               transition
             "
           />
+
+          {/* nowe selecty */}
+
+          <select
+            value={typObiektu}
+            onChange={(e) => setTypObiektu(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition"
+          >
+            <option value="">Typ obiektu</option>
+            <option value="most">Most</option>
+            <option value="jaz">Jaz</option>
+            <option value="wal">Wał przeciwpowodziowy</option>
+            <option value="przepompownia">Przepompownia</option>
+          </select>
+
+          <select
+            value={rodzajUszkodzenia}
+            onChange={(e) => setRodzajUszkodzenia(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition"
+          >
+            <option value="">Rodzaj uszkodzenia</option>
+            <option value="pekniecie">Pęknięcie</option>
+            <option value="korozja">Korozja</option>
+            <option value="zalanie">Zalanie</option>
+            <option value="mechaniczne">Uszkodzenia mechaniczne</option>
+          </select>
+
+          <select
+            value={stopien}
+            onChange={(e) => setStopien(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition"
+          >
+            <option value="">Stopień zagrożenia</option>
+            <option value="1">1 - Niski</option>
+            <option value="2">2</option>
+            <option value="3">3 - Średni</option>
+            <option value="4">4</option>
+            <option value="5">5 - Krytyczny</option>
+          </select>
 
           <textarea
             placeholder="Opis"

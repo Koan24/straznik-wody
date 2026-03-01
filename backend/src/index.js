@@ -90,21 +90,72 @@ app.delete('/api/wodowskazy/:id', auth, async (req, res) => {
 
 // --- Zgloszenia ---
 app.get('/api/zgloszenia', async (req, res) => {
-  const items = await prisma.zgloszenie.findMany({ include: { user: { select: { id: true, imie: true, email: true } } } })
-  res.json(items)
+  try {
+    const data = req.body
+
+    const item = await prisma.zgloszenie.create({
+      data: {
+        ...data,
+        stopien: Number(data.stopien)
+      }
+    })
+
+    res.json(item)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'could not create zgloszenie' })
+  }
 })
 
 app.post('/api/zgloszenia', async (req, res) => {
-  const data = req.body
-  const item = await prisma.zgloszenie.create({ data })
-  res.json(item)
+  try {
+    const {
+      tytul,
+      opis,
+      typObiektu,
+      rodzajUszkodzenia,
+      stopien,
+      lat,
+      lng
+    } = req.body
+
+    const item = await prisma.zgloszenie.create({
+      data: {
+        tytul,
+        opis,
+        typObiektu,
+        rodzajUszkodzenia,
+        stopien: Number(stopien),
+        lat,
+        lng
+      }
+    })
+
+    res.json(item)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'could not create zgloszenie' })
+  }
 })
 
 app.put('/api/zgloszenia/:id', auth, async (req, res) => {
-  const id = Number(req.params.id)
-  const data = req.body
-  const item = await prisma.zgloszenie.update({ where: { id }, data })
-  res.json(item)
+  try {
+    const id = Number(req.params.id)
+    const data = req.body
+
+    const item = await prisma.zgloszenie.update({
+      where: { id },
+      data: {
+        ...data,
+        stopien: Number(data.stopien)
+      }
+    })
+
+    res.json(item)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'could not update zgloszenie' })
+  }
 })
 
 app.delete('/api/zgloszenia/:id', auth, async (req, res) => {

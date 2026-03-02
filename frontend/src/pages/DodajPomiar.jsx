@@ -8,21 +8,43 @@ import { useToast } from "../context/ToastContext"
 
 function DodajPomiar() {
   const [wartosc, setWartosc] = useState("")
-  const { dodajPomiar } = useWodowskazy()
+  const [wodowskazId, setWodowskazId] = useState("")
+  const {wodowskazy} = useWodowskazy()
   const {addToast} = useToast()
   const navigate = useNavigate()
 
-  const handleSubmit = () => {
-    if (!wartosc) {
-      addToast("Podaj wartość pomiaru", "error");
+  const handleSubmit = async () => {
+    if (!wodowskazId || !wartosc) {
+      addToast("Wybierz wodowskaz i podaj wartość", "error")
       return
     }
 
-    dodajPomiar(wartosc)
+    const token = localStorage.getItem("token")
+      if (!token) {
+        addToast("Brak autoryzacji", "error")
+        return
+      }
 
-    addToast("Pomiar zapisany poprawnie", "success")
+    try {
+      const res = await fetch("http://localhost:4000/api/pomiary", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          wodowskazId: Number(wodowskazId),
+          wartosc: Number(wartosc)
+        })
+      })
 
-    navigate("/wodowskazy/archiwum")
+      if (!res.ok) throw new Error()
+
+      addToast("Pomiar zapisany poprawnie", "success")
+      navigate("/wodowskazy/archiwum")
+    } catch (err) {
+      addToast("Błąd zapisu pomiaru", "error")
+    }
   }
 
   return (
@@ -30,6 +52,19 @@ function DodajPomiar() {
 
       <Card>
         <div className="space-y-6">
+
+          <select
+            value={wodowskazId}
+            onChange={(e) => setWodowskazId(e.target.value)}
+            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-900"
+          >
+            <option value="">Wybierz wodowskaz</option>
+            {wodowskazy.map(w => (
+              <option key={w.id} value={w.id}>
+                {w.nazwa}
+              </option>
+            ))}
+          </select>
 
           <input
             type="number"
@@ -47,7 +82,11 @@ function DodajPomiar() {
           />
 
           <div className="flex gap-4">
-            <Button variant="primary" onClick={handleSubmit}>
+            <Button
+              variant="primary" 
+              onClick={handleSubmit}
+              disabled={!wodowskazId || !wartosc}
+            >
               Zapisz pomiar
             </Button>
 

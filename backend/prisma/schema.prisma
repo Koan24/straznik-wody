@@ -7,6 +7,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum WaterLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum AccessLevel {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum ReadCondition {
+  GOOD
+  LIMITED
+  BAD
+}
+
 model User {
   id         Int          @id @default(autoincrement())
   imie       String
@@ -16,6 +34,7 @@ model User {
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
   zgloszenia Zgloszenie[]
+  pomiary    Pomiar[]
 }
 
 model Wodowskaz {
@@ -24,6 +43,7 @@ model Wodowskaz {
   lat       Float?
   lng       Float?
   opis      String?
+  pomiary   Pomiar[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -42,4 +62,18 @@ model Zgloszenie {
   user              User?    @relation(fields: [userId], references: [id])
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+}
+
+model Pomiar {
+  id Int @id @default(autoincrement())
+
+  wodowskazId Int
+  wodowskaz   Wodowskaz @relation(fields: [wodowskazId], references: [id])
+
+  wartosc Float
+
+  userId Int?
+  user   User? @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
 }

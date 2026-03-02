@@ -30,12 +30,11 @@ ChartJS.register(
 function SzczegolyWodowskazu() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { wodowskazy, dodajPomiar } = useWodowskazy()
+  const { wodowskazy } = useWodowskazy()
+  const { addToast } = useToast()
 
   const wodowskaz = wodowskazy.find(w => String(w.id) === id)
   const [wartosc, setWartosc] = useState("")
-
-  const {addToast} = useToast()
 
   if (!wodowskaz) {
     return (
@@ -49,36 +48,63 @@ function SzczegolyWodowskazu() {
     )
   }
 
-  const handleAdd = () => {
+  const pomiary = wodowskaz.pomiary || []
+
+  const handleAdd = async () => {
     if (!wartosc) {
       addToast("Podaj wartość", "error")
       return
     }
 
-    dodajPomiar(wodowskaz.id, wartosc)
-    addToast("Pomiar dodany poprawnie", "success")
-    setWartosc("")
+    const token = localStorage.getItem("token")
+    if (!token) {
+      addToast("Brak autoryzacji", "error")
+      return
+    }
+
+    try {
+      const res = await fetch("http://localhost:4000/api/pomiary", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          wodowskazId: wodowskaz.id,
+          wartosc: Number(wartosc)
+        })
+      })
+
+      if (!res.ok) throw new Error()
+
+      addToast("Pomiar dodany poprawnie", "success")
+      setWartosc("")
+      window.location.reload()
+    } catch {
+      addToast("Błąd zapisu", "error")
+    }
   }
 
   const data = {
-    labels: wodowskaz.pomiary.map(p => p.data),
+    labels: pomiary.map(p =>
+      new Date(p.createdAt).toLocaleString()
+    ),
     datasets: [
       {
         label: "Poziom wody (cm)",
-        data: wodowskaz.pomiary.map(p => p.wartosc),
+        data: pomiary.map(p => p.wartosc),
         borderColor: "#0ea5e9",
         backgroundColor: "rgba(14,165,233,0.2)",
         tension: 0.3
-      },
-    ],
+      }
+    ]
   }
 
   return (
     <Layout title={wodowskaz.nazwa}>
-
       <div className="space-y-8">
 
-        {/* Sekcja dodawania pomiaru */}
+        {/* Dodawanie pomiaru */}
         <Card>
           <div className="space-y-4">
 
@@ -108,7 +134,7 @@ function SzczegolyWodowskazu() {
           </div>
         </Card>
 
-        {/* Sekcja wykresu */}
+        {/* Wykres */}
         <Card>
           <div className="space-y-4">
 
@@ -116,7 +142,7 @@ function SzczegolyWodowskazu() {
               Wykres poziomu wody
             </div>
 
-            {wodowskaz.pomiary.length === 0 ? (
+            {pomiary.length === 0 ? (
               <div className="text-gray-600 dark:text-gray-300">
                 Brak pomiarów
               </div>
@@ -135,7 +161,6 @@ function SzczegolyWodowskazu() {
         </Button>
 
       </div>
-
     </Layout>
   )
 }

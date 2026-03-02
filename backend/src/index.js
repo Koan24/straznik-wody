@@ -65,7 +65,11 @@ app.get('/api/uzytkownicy/:id', async (req, res) => {
 
 // --- Wodowskazy ---
 app.get('/api/wodowskazy', async (req, res) => {
-  const items = await prisma.wodowskaz.findMany()
+  const items = await prisma.wodowskaz.findMany({
+    include: {
+      pomiary: true
+    }
+  })
   res.json(items)
 })
 
@@ -88,22 +92,46 @@ app.delete('/api/wodowskazy/:id', auth, async (req, res) => {
   res.json({ ok: true })
 })
 
+// --- Pomiary ---
+app.get('/api/pomiary', async (req, res) => {
+  const pomiary = await prisma.pomiar.findMany({
+    include: { wodowskaz: true },
+    orderBy: { createdAt: 'desc' }
+  })
+  res.json(pomiary)
+})
+
+app.post('/api/pomiary', auth, async (req, res) => {
+  const { wodowskazId, wartosc } = req.body
+
+  const pomiar = await prisma.pomiar.create({
+    data: {
+      wodowskazId: Number(wodowskazId),
+      wartosc: Number(wartosc)
+    }
+  })
+
+  res.json(pomiar)
+})
+
+app.delete('/api/pomiary/:id', auth, async (req, res) => {
+  await prisma.pomiar.delete({
+    where: { id: Number(req.params.id) }
+  })
+  res.json({ ok: true })
+})
+
 // --- Zgloszenia ---
 app.get('/api/zgloszenia', async (req, res) => {
   try {
-    const data = req.body
-
-    const item = await prisma.zgloszenie.create({
-      data: {
-        ...data,
-        stopien: Number(data.stopien)
-      }
+    const zgloszenia = await prisma.zgloszenie.findMany({
+      include: { user: true },
+      orderBy: { createdAt: 'desc' }
     })
-
-    res.json(item)
+    res.json(zgloszenia)
   } catch (err) {
     console.error(err)
-    res.status(500).json({ error: 'could not create zgloszenie' })
+    res.status(500).json({ error: 'could not fetch zgloszenia' })
   }
 })
 

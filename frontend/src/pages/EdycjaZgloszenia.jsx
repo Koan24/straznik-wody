@@ -9,16 +9,14 @@ import { useToast } from "../context/ToastContext"
 function EdycjaZgloszenia() {
   const { id } = useParams()
   const navigate = useNavigate()
-
   const { zgloszenia, aktualizujZgloszenie } = useZgloszenia()
+  const { addToast } = useToast()
 
   const zgloszenie = zgloszenia.find(z => String(z.id) === id)
 
   const [tytul, setTytul] = useState("")
   const [lokalizacja, setLokalizacja] = useState("")
   const [opis, setOpis] = useState("")
-
-  const {addToast} = useToast()
 
   useEffect(() => {
     if (zgloszenie) {
@@ -42,7 +40,7 @@ function EdycjaZgloszenia() {
   if (!zgloszenie) {
     return (
       <Layout title="Błąd">
-        <div className="text-red-500">
+        <div className="text-danger">
           Nie znaleziono zgłoszenia
         </div>
       </Layout>
@@ -51,7 +49,6 @@ function EdycjaZgloszenia() {
 
   return (
     <Layout title="Edycja zgłoszenia">
-
       <Card>
         <div className="space-y-6">
 
@@ -61,9 +58,9 @@ function EdycjaZgloszenia() {
             placeholder="Tytuł"
             className="
               w-full px-4 py-3 rounded-lg
-              border border-gray-300 dark:border-gray-600
-              bg-white dark:bg-slate-900
-              text-gray-800 dark:text-gray-100
+              border border-border dark:border-darkborder
+              bg-surface dark:bg-darkbg
+              text-black dark:text-[#B9D6F2]
               focus:outline-none focus:ring-2 focus:ring-primary
               transition
             "
@@ -75,9 +72,9 @@ function EdycjaZgloszenia() {
             placeholder="Lokalizacja"
             className="
               w-full px-4 py-3 rounded-lg
-              border border-gray-300 dark:border-gray-600
-              bg-white dark:bg-slate-900
-              text-gray-800 dark:text-gray-100
+              border border-border dark:border-darkborder
+              bg-surface dark:bg-darkbg
+              text-black dark:text-[#B9D6F2]
               focus:outline-none focus:ring-2 focus:ring-primary
               transition
             "
@@ -90,9 +87,9 @@ function EdycjaZgloszenia() {
             rows={4}
             className="
               w-full px-4 py-3 rounded-lg
-              border border-gray-300 dark:border-gray-600
-              bg-white dark:bg-slate-900
-              text-gray-800 dark:text-gray-100
+              border border-border dark:border-darkborder
+              bg-surface dark:bg-darkbg
+              text-black dark:text-[#B9D6F2]
               focus:outline-none focus:ring-2 focus:ring-primary
               transition
             "
@@ -113,7 +110,6 @@ function EdycjaZgloszenia() {
 
         </div>
       </Card>
-
     </Layout>
   )
 }

@@ -12,10 +12,9 @@ function Register() {
   const [email, setEmail] = useState("")
   const [haslo, setHaslo] = useState("")
   const [loading, setLoading] = useState(false)
-
-  const {addToast} = useToast()
-
   const [errors, setErrors] = useState({})
+
+  const { addToast } = useToast()
 
   const handleRegister = async () => {
     const newErrors = {}
@@ -55,69 +54,70 @@ function Register() {
     setLoading(false)
   }
 
+  const inputClass = (error) =>
+    `w-full px-4 py-3 rounded-lg border ${
+      error
+        ? "border-danger"
+        : "border-border dark:border-darkborder"
+    } bg-surface dark:bg-darkbg text-black dark:text-[#B9D6F2] focus:outline-none focus:ring-2 focus:ring-primary transition`
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background dark:bg-darkbg transition-colors duration-300">
       
-      <div className="bg-white dark:bg-slate-800 p-10 rounded-2xl shadow-card border border-gray-200 dark:border-gray-700 w-full max-w-md">
+      <div className="bg-surface dark:bg-darksurface p-10 rounded-2xl shadow-card border border-border dark:border-darkborder w-full max-w-md">
         
-        <h2 className="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-gray-100">
+        <h2 className="text-2xl font-bold text-center mb-8 text-black dark:text-[#B9D6F2]">
           Rejestracja
         </h2>
 
         <div className="space-y-5">
 
-          <input
-            placeholder="Imię"
-            value={imie}
-            onChange={(e) => {
-              setImie(e.target.value)
-              setErrors(prev => ({ ...prev, imie: null }))
-            }}
-            className={`w-full px-4 py-3 rounded-lg border ${
-              errors.imie
-                ? "border-red-500"
-                : "border-gray-300 dark:border-gray-600"
-            } bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition`}
-          />
-          {errors.imie && (
-            <p className="text-sm text-red-500 mt-1">{errors.imie}</p>
-          )}
+          <div>
+            <input
+              placeholder="Imię"
+              value={imie}
+              onChange={(e) => {
+                setImie(e.target.value)
+                setErrors(prev => ({ ...prev, imie: null }))
+              }}
+              className={inputClass(errors.imie)}
+            />
+            {errors.imie && (
+              <p className="text-sm text-danger mt-1">{errors.imie}</p>
+            )}
+          </div>
 
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value)
-              setErrors(prev => ({ ...prev, email: null }))
-            }}
-            className={`w-full px-4 py-3 rounded-lg border ${
-              errors.email
-                ? "border-red-500"
-                : "border-gray-300 dark:border-gray-600"
-            } bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition`}
-          />
-          {errors.email && (
-            <p className="text-sm text-red-500 mt-1">{errors.email}</p>
-          )}
+          <div>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value)
+                setErrors(prev => ({ ...prev, email: null }))
+              }}
+              className={inputClass(errors.email)}
+            />
+            {errors.email && (
+              <p className="text-sm text-danger mt-1">{errors.email}</p>
+            )}
+          </div>
 
-          <input
-            placeholder="Hasło"
-            type="password"
-            value={haslo}
-            onChange={(e) => {
-              setHaslo(e.target.value)
-              setErrors(prev => ({ ...prev, haslo: null }))
-            }}
-            className={`w-full px-4 py-3 rounded-lg border ${
-              errors.haslo
-                ? "border-red-500"
-                : "border-gray-300 dark:border-gray-600"
-            } bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition`}
-          />
-          {errors.haslo && (
-            <p className="text-sm text-red-500 mt-1">{errors.haslo}</p>
-          )}
+          <div>
+            <input
+              type="password"
+              placeholder="Hasło"
+              value={haslo}
+              onChange={(e) => {
+                setHaslo(e.target.value)
+                setErrors(prev => ({ ...prev, haslo: null }))
+              }}
+              className={inputClass(errors.haslo)}
+            />
+            {errors.haslo && (
+              <p className="text-sm text-danger mt-1">{errors.haslo}</p>
+            )}
+          </div>
 
           <Button variant="primary" onClick={handleRegister} disabled={loading}>
             {loading ? "Rejestracja..." : "Zarejestruj"}

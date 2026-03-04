@@ -23,8 +23,7 @@ function DodajWodowskaz() {
   const [lng, setLng] = useState(null)
 
   const { dodajWodowskaz } = useWodowskazy()
-  const {addToast} = useToast()
-
+  const { addToast } = useToast()
   const navigate = useNavigate()
 
   const handleSubmit = () => {
@@ -40,7 +39,6 @@ function DodajWodowskaz() {
 
   return (
     <Layout title="Nowy wodowskaz">
-
       <Card>
         <div className="space-y-6">
 
@@ -49,16 +47,16 @@ function DodajWodowskaz() {
             value={nazwa}
             onChange={e => setNazwa(e.target.value)}
             className="
-              w-full px-4 py-3 rounded-lg 
-              border border-gray-300 dark:border-gray-600
-              bg-white dark:bg-slate-900 
-              text-gray-800 dark:text-gray-100
+              w-full px-4 py-3 rounded-lg
+              border border-border dark:border-darkborder
+              bg-surface dark:bg-darkbg
+              text-black dark:text-[#B9D6F2]
               focus:outline-none focus:ring-2 focus:ring-primary
               transition
             "
           />
 
-          <div className="rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700">
+          <div className="rounded-lg overflow-hidden border border-border dark:border-darkborder">
             <MapContainer
               center={[51.1079, 17.0385]}
               zoom={13}
@@ -74,7 +72,7 @@ function DodajWodowskaz() {
           </div>
 
           {lat && lng && (
-            <div className="text-sm text-gray-600 dark:text-gray-300">
+            <div className="text-sm text-gray-600 dark:text-[#93C1DD]">
               Wybrane współrzędne: {lat.toFixed(5)}, {lng.toFixed(5)}
             </div>
           )}
@@ -94,7 +92,6 @@ function DodajWodowskaz() {
 
         </div>
       </Card>
-
     </Layout>
   )
 }

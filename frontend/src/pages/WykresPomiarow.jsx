@@ -48,7 +48,7 @@ function WykresPomiarow() {
       <Card>
 
         {pomiary.length === 0 ? (
-          <div className="text-gray-600 dark:text-gray-300">
+          <div className="text-gray-600 dark:text-[#93C1DD] dark:text-gray-300">
             Brak danych do wyświetlenia
           </div>
         ) : (

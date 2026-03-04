@@ -27,7 +27,7 @@ function MapaZgloszen() {
       <Card>
         <div className="space-y-6">
 
-          <div className="rounded-xl overflow-hidden border border-gray-300 dark:border-gray-700">
+          <div className="rounded-xl overflow-hidden border border-border dark:border-darkborder dark:border-darkborder">
             <MapContainer
               center={[51.1079, 17.0385]}
               zoom={13}

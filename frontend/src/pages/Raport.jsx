@@ -69,7 +69,7 @@ function Raport() {
       <Card>
         <div className="space-y-6">
 
-          <div className="text-gray-600 dark:text-gray-300">
+          <div className="text-gray-600 dark:text-[#93C1DD] dark:text-gray-300">
             Wygeneruj raport PDF zawierający wszystkie zgłoszenia
             wraz z linkiem do lokalizacji w Google Maps.
           </div>

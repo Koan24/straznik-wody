@@ -12,7 +12,7 @@ function DodajUzytkownika() {
   const [rola, setRola] = useState("user")
 
   const { dodajUzytkownika } = useUzytkownicy()
-  const {addToast} = useToast()
+  const { addToast } = useToast()
   const navigate = useNavigate()
 
   const handleSubmit = () => {
@@ -29,9 +29,7 @@ function DodajUzytkownika() {
     }
 
     dodajUzytkownika(imie, email, rola)
-
     addToast("Użytkownik zapisany poprawnie", "success")
-
     navigate("/admin")
   }
 
@@ -45,7 +43,14 @@ function DodajUzytkownika() {
             placeholder="Imię"
             value={imie}
             onChange={e => setImie(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition"
+            className="
+              w-full px-4 py-3 rounded-lg
+              border border-border dark:border-darkborder
+              bg-surface dark:bg-darkbg
+              text-black dark:text-[#B9D6F2]
+              focus:outline-none focus:ring-2 focus:ring-primary
+              transition
+            "
           />
 
           <input
@@ -53,13 +58,27 @@ function DodajUzytkownika() {
             placeholder="Email"
             value={email}
             onChange={e => setEmail(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition"
+            className="
+              w-full px-4 py-3 rounded-lg
+              border border-border dark:border-darkborder
+              bg-surface dark:bg-darkbg
+              text-black dark:text-[#B9D6F2]
+              focus:outline-none focus:ring-2 focus:ring-primary
+              transition
+            "
           />
 
           <select
             value={rola}
             onChange={e => setRola(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition"
+            className="
+              w-full px-4 py-3 rounded-lg
+              border border-border dark:border-darkborder
+              bg-surface dark:bg-darkbg
+              text-black dark:text-[#B9D6F2]
+              focus:outline-none focus:ring-2 focus:ring-primary
+              transition
+            "
           >
             <option value="user">User</option>
             <option value="admin">Admin</option>

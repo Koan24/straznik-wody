@@ -71,7 +71,7 @@ function Home() {
               <div className="font-medium">
                 {ostatnieZgloszenie.tytul}
               </div>
-              <div className="text-gray-600 dark:text-gray-400">
+              <div className="text-gray-600 dark:text-[#93C1DD] dark:text-gray-400">
                 {ostatnieZgloszenie.opis}
               </div>
             </div>

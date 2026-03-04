@@ -15,7 +15,7 @@ function ArchiwumPomiarow() {
 
         {pomiary.length === 0 && (
           <Card>
-            <div className="text-gray-600 dark:text-gray-300">
+            <div className="text-gray-600 dark:text-[#93C1DD] dark:text-gray-300">
               Brak zapisanych pomiarów
             </div>
           </Card>
@@ -29,7 +29,7 @@ function ArchiwumPomiarow() {
                 <div className="font-semibold">
                   {p.wartosc} cm
                 </div>
-                <div className="text-sm text-gray-600 dark:text-gray-300">
+                <div className="text-sm text-gray-600 dark:text-[#93C1DD] dark:text-gray-300">
                   {p.data}
                 </div>
               </div>

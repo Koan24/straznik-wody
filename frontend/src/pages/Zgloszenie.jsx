@@ -1,4 +1,4 @@
-import { data, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { useZgloszenia } from "../context/ZgloszeniaContext"
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet"
@@ -20,6 +20,7 @@ function ClickHandler({ setLat, setLng }) {
 function Zgloszenie() {
   const navigate = useNavigate()
   const { dodajZgloszenie } = useZgloszenia()
+  const { addToast } = useToast()
 
   const [tytul, setTytul] = useState("")
   const [opis, setOpis] = useState("")
@@ -29,23 +30,21 @@ function Zgloszenie() {
   const [rodzajUszkodzenia, setRodzajUszkodzenia] = useState("")
   const [stopien, setStopien] = useState("")
 
-  const {addToast} = useToast()
-
   const handleSubmit = () => {
     if (
-      !tytul || 
+      !tytul ||
       !opis ||
       !typObiektu ||
       !rodzajUszkodzenia ||
-      !stopien || 
-      lat === null || 
+      !stopien ||
+      lat === null ||
       lng === null
     ) {
       addToast("Wypełnij wszystkie pola i kliknij lokalizację na mapie", "error")
       return
     }
 
-    dodajZgloszenie({ 
+    dodajZgloszenie({
       tytul,
       opis,
       typObiektu,
@@ -55,13 +54,22 @@ function Zgloszenie() {
       lng,
       data: new Date().toISOString()
     })
+
     addToast("Pomiar dodany poprawnie", "success")
     navigate("/obiekty/lista")
   }
 
+  const inputClass = `
+    w-full px-4 py-3 rounded-lg
+    border border-border dark:border-darkborder
+    bg-surface dark:bg-darkbg
+    text-black dark:text-[#B9D6F2]
+    focus:outline-none focus:ring-2 focus:ring-primary
+    transition
+  `
+
   return (
     <Layout title="Zgłoszenie usterki">
-
       <Card>
         <div className="space-y-6">
 
@@ -69,22 +77,13 @@ function Zgloszenie() {
             placeholder="Tytuł"
             value={tytul}
             onChange={(e) => setTytul(e.target.value)}
-            className="
-              w-full px-4 py-3 rounded-lg
-              border border-gray-300 dark:border-gray-600
-              bg-white dark:bg-slate-900
-              text-gray-800 dark:text-gray-100
-              focus:outline-none focus:ring-2 focus:ring-primary
-              transition
-            "
+            className={inputClass}
           />
-
-          {/* nowe selecty */}
 
           <select
             value={typObiektu}
             onChange={(e) => setTypObiektu(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition"
+            className={inputClass}
           >
             <option value="">Typ obiektu</option>
             <option value="most">Most</option>
@@ -96,7 +95,7 @@ function Zgloszenie() {
           <select
             value={rodzajUszkodzenia}
             onChange={(e) => setRodzajUszkodzenia(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition"
+            className={inputClass}
           >
             <option value="">Rodzaj uszkodzenia</option>
             <option value="pekniecie">Pęknięcie</option>
@@ -108,7 +107,7 @@ function Zgloszenie() {
           <select
             value={stopien}
             onChange={(e) => setStopien(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-900 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition"
+            className={inputClass}
           >
             <option value="">Stopień zagrożenia</option>
             <option value="1">1 - Niski</option>
@@ -123,21 +122,14 @@ function Zgloszenie() {
             value={opis}
             onChange={(e) => setOpis(e.target.value)}
             rows={4}
-            className="
-              w-full px-4 py-3 rounded-lg
-              border border-gray-300 dark:border-gray-600
-              bg-white dark:bg-slate-900
-              text-gray-800 dark:text-gray-100
-              focus:outline-none focus:ring-2 focus:ring-primary
-              transition
-            "
+            className={inputClass}
           />
 
-          <div className="text-sm text-gray-600 dark:text-gray-300">
+          <div className="text-sm text-gray-600 dark:text-[#93C1DD]">
             Wybierz lokalizację na mapie:
           </div>
 
-          <div className="rounded-xl overflow-hidden border border-gray-300 dark:border-gray-700">
+          <div className="rounded-xl overflow-hidden border border-border dark:border-darkborder">
             <MapContainer
               center={[51.1079, 17.0385]}
               zoom={13}
@@ -153,7 +145,7 @@ function Zgloszenie() {
           </div>
 
           {lat && lng && (
-            <div className="text-sm text-gray-600 dark:text-gray-300">
+            <div className="text-sm text-gray-600 dark:text-[#93C1DD]">
               Wybrane współrzędne: {lat.toFixed(5)}, {lng.toFixed(5)}
             </div>
           )}
@@ -173,7 +165,6 @@ function Zgloszenie() {
 
         </div>
       </Card>
-
     </Layout>
   )
 }

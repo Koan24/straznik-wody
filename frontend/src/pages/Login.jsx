@@ -33,10 +33,10 @@ function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background dark:bg-darkbg transition-colors duration-300">
-      
-      <div className="bg-white dark:bg-slate-800 p-10 rounded-2xl shadow-card border border-gray-200 dark:border-gray-700 w-full max-w-md">
-        
-        <h2 className="text-2xl font-bold text-center mb-8 text-gray-800 dark:text-gray-100">
+  
+      <div className="bg-surface dark:bg-darksurface p-10 rounded-2xl shadow-card border border-border dark:border-darkborder w-full max-w-md">
+    
+        <h2 className="text-2xl font-bold text-center mb-8 text-black dark:text-[#B9D6F2]">
           Logowanie
         </h2>
 
@@ -48,14 +48,14 @@ function Login() {
             onChange={(e) => setEmail(e.target.value)}
             className="
               w-full px-4 py-3 rounded-lg
-              border border-gray-300 dark:border-gray-600
-              bg-white dark:bg-slate-900
-              text-gray-800 dark:text-gray-100
+              border border-border dark:border-darkborder
+              bg-surface dark:bg-darkbg
+              text-black dark:text-[#B9D6F2]
               focus:outline-none focus:ring-2 focus:ring-primary
               transition
             "
           />
-
+    
           <input
             placeholder="Hasło"
             type="password"
@@ -63,9 +63,9 @@ function Login() {
             onChange={(e) => setHaslo(e.target.value)}
             className="
               w-full px-4 py-3 rounded-lg
-              border border-gray-300 dark:border-gray-600
-              bg-white dark:bg-slate-900
-              text-gray-800 dark:text-gray-100
+              border border-border dark:border-darkborder
+              bg-surface dark:bg-darkbg
+              text-black dark:text-[#B9D6F2]
               focus:outline-none focus:ring-2 focus:ring-primary
               transition
             "

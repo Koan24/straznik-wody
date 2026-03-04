@@ -9,8 +9,8 @@ import { useToast } from "../context/ToastContext"
 function DodajPomiar() {
   const [wartosc, setWartosc] = useState("")
   const [wodowskazId, setWodowskazId] = useState("")
-  const {wodowskazy} = useWodowskazy()
-  const {addToast} = useToast()
+  const { wodowskazy } = useWodowskazy()
+  const { addToast } = useToast()
   const navigate = useNavigate()
 
   const handleSubmit = async () => {
@@ -20,10 +20,10 @@ function DodajPomiar() {
     }
 
     const token = localStorage.getItem("token")
-      if (!token) {
-        addToast("Brak autoryzacji", "error")
-        return
-      }
+    if (!token) {
+      addToast("Brak autoryzacji", "error")
+      return
+    }
 
     try {
       const res = await fetch("http://localhost:4000/api/pomiary", {
@@ -42,7 +42,7 @@ function DodajPomiar() {
 
       addToast("Pomiar zapisany poprawnie", "success")
       navigate("/wodowskazy/archiwum")
-    } catch (err) {
+    } catch {
       addToast("Błąd zapisu pomiaru", "error")
     }
   }
@@ -56,7 +56,14 @@ function DodajPomiar() {
           <select
             value={wodowskazId}
             onChange={(e) => setWodowskazId(e.target.value)}
-            className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-slate-900"
+            className="
+              w-full px-4 py-3 rounded-lg
+              border border-border dark:border-darkborder
+              bg-surface dark:bg-darkbg
+              text-black dark:text-[#B9D6F2]
+              focus:outline-none focus:ring-2 focus:ring-primary
+              transition
+            "
           >
             <option value="">Wybierz wodowskaz</option>
             {wodowskazy.map(w => (
@@ -73,9 +80,9 @@ function DodajPomiar() {
             onChange={(e) => setWartosc(e.target.value)}
             className="
               w-full px-4 py-3 rounded-lg
-              border border-gray-300 dark:border-gray-600
-              bg-white dark:bg-slate-900
-              text-gray-800 dark:text-gray-100
+              border border-border dark:border-darkborder
+              bg-surface dark:bg-darkbg
+              text-black dark:text-[#B9D6F2]
               focus:outline-none focus:ring-2 focus:ring-primary
               transition
             "
@@ -83,7 +90,7 @@ function DodajPomiar() {
 
           <div className="flex gap-4">
             <Button
-              variant="primary" 
+              variant="primary"
               onClick={handleSubmit}
               disabled={!wodowskazId || !wartosc}
             >

@@ -9,7 +9,7 @@ function Layout({ children, title }) {
   return (
     <div className="min-h-screen bg-background dark:bg-darkbg transition-colors duration-300">
       
-      <header className="flex justify-between items-center px-8 py-5 border-b border-border dark:border-darkborder">
+      <header className="flex justify-between items-center px-4 py-3 border-b border-border dark:border-darkborder">
         
         <div
           onClick={() => navigate("/home")}
@@ -18,7 +18,7 @@ function Layout({ children, title }) {
           <img
             src="/logo.jpg"
             alt="Strażnik Wody"
-            className="h-10 w-auto object-contain"
+            className="h-8 w-auto object-contain"
           />
           <h1 className="text-lg font-semibold text-primary dark:text-[#B9D6F2]">
             Strażnik Wody
@@ -59,7 +59,7 @@ function Layout({ children, title }) {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 py-8">
+      <main className="max-w-md mx-auto px-5 py-6">
         <h2 className="text-2xl font-bold mb-8 text-black dark:text-[#B9D6F2]">
           {title}
         </h2>

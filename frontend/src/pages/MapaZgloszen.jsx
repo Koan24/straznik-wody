@@ -3,8 +3,6 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
 import L from "leaflet"
 import { useZgloszenia } from "../context/ZgloszeniaContext"
 import Layout from "../components/Layout"
-import Button from "../components/Button"
-import Card from "../components/Card"
 
 // Fix ikon (Leaflet + Vite bug)
 delete L.Icon.Default.prototype._getIconUrl
@@ -24,50 +22,59 @@ function MapaZgloszen() {
   return (
     <Layout title="Mapa zgłoszeń">
 
-      <Card>
-        <div className="space-y-6">
+      <div className="space-y-4">
 
-          <div className="rounded-xl overflow-hidden border border-border dark:border-darkborder dark:border-darkborder">
-            <MapContainer
-              center={[51.1079, 17.0385]}
-              zoom={13}
-              className="h-[400px] w-full"
-            >
-              <TileLayer
-                attribution="© OpenStreetMap"
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
+        <div className="rounded-xl overflow-hidden border border-border dark:border-darkborder">
+          <MapContainer
+            center={[51.1079, 17.0385]}
+            zoom={13}
+            className="h-[72vh] w-full"
+          >
+            <TileLayer
+              attribution="© OpenStreetMap"
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
 
-              {zgloszenia.map((z) =>
-                z.lat && z.lng ? (
-                  <Marker key={z.id} position={[z.lat, z.lng]}>
-                    <Popup>
-                      <div className="space-y-2">
-                        <div className="font-semibold">
-                          {z.tytul}
-                        </div>
-                        <div className="text-sm">
-                          {z.opis}
-                        </div>
+            {zgloszenia.map((z) =>
+              z.lat && z.lng ? (
+                <Marker key={z.id} position={[z.lat, z.lng]}>
+                  <Popup>
+                    <div className="space-y-2">
+                      <div className="font-semibold">
+                        {z.tytul}
                       </div>
-                    </Popup>
-                  </Marker>
-                ) : null
-              )}
-            </MapContainer>
-          </div>
+                      <div className="text-sm">
+                        {z.opis}
+                      </div>
+                    </div>
+                  </Popup>
+                </Marker>
+              ) : null
+            )}
 
-          <div className="pt-2">
-            <Button
-              variant="secondary"
-              onClick={() => navigate("/obiekty")}
-            >
-              Powrót
-            </Button>
-          </div>
-
+          </MapContainer>
         </div>
-      </Card>
+
+        <button
+          onClick={() => navigate("/obiekty")}
+          className="
+            w-full
+            py-4
+            rounded-xl
+            border
+            border-border
+            dark:border-darkborder
+            text-gray-700
+            dark:text-gray-300
+            hover:bg-surface
+            dark:hover:bg-darksurface
+            transition
+          "
+        >
+          Powrót
+        </button>
+
+      </div>
 
     </Layout>
   )

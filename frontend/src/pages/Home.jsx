@@ -3,7 +3,6 @@ import { useZgloszenia } from "../context/ZgloszeniaContext"
 import { useWodowskazy } from "../context/WodowskazyContext"
 import Layout from "../components/Layout"
 import Card from "../components/Card"
-import Button from "../components/Button"
 import { motion } from "framer-motion"
 
 function AnimatedNumber({ value }) {
@@ -31,74 +30,97 @@ function Home() {
 
   return (
     <Layout title="Panel systemu">
-      
-      <div className="grid md:grid-cols-3 gap-6 mb-10">
+
+      <div className="space-y-6">
 
         <Card>
-          <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-            Liczba zgłoszeń
+          <div className="space-y-4">
+
+            <div className="flex justify-between">
+              <div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  Liczba zgłoszeń
+                </div>
+                <AnimatedNumber value={zgloszenia.length} />
+              </div>
+
+              <div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  Wodowskazy
+                </div>
+                <AnimatedNumber value={wodowskazy.length} />
+              </div>
+            </div>
+
           </div>
-          <AnimatedNumber value={zgloszenia.length} />
         </Card>
 
         <Card>
-          <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-            Liczba wodowskazów
+          <div className="space-y-3">
+
+            <div className="font-semibold">
+              Ostatnie zgłoszenie
+            </div>
+
+            {ostatnieZgloszenie ? (
+              <div>
+                <div className="font-medium">
+                  {ostatnieZgloszenie.tytul}
+                </div>
+                <div className="text-gray-600 dark:text-[#93C1DD]">
+                  {ostatnieZgloszenie.opis}
+                </div>
+              </div>
+            ) : (
+              <div className="text-gray-500">
+                Brak zgłoszeń
+              </div>
+            )}
+
           </div>
-          <AnimatedNumber value={wodowskazy.length} />
         </Card>
 
-        <Card>
-          <div className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-            Status systemu
-          </div>
-          <div className="text-green-500 font-semibold">
-            Aktywny
-          </div>
-        </Card>
-
-      </div>
-
-      <Card>
         <div className="space-y-4">
 
-          <div className="font-semibold text-lg">
-            Ostatnie zgłoszenie
-          </div>
+          <button
+            onClick={() => navigate("/obiekty")}
+            className="
+              w-full
+              py-5
+              rounded-xl
+              bg-primary
+              text-white
+              text-lg
+              font-semibold
+              shadow-md
+              active:scale-[0.98]
+              transition
+            "
+          >
+            Obiekty hydrotechniczne
+          </button>
 
-          {ostatnieZgloszenie ? (
-            <div>
-              <div className="font-medium">
-                {ostatnieZgloszenie.tytul}
-              </div>
-              <div className="text-gray-600 dark:text-[#93C1DD]">
-                {ostatnieZgloszenie.opis}
-              </div>
-            </div>
-          ) : (
-            <div className="text-gray-500">
-              Brak zgłoszeń
-            </div>
-          )}
-
-          <div className="flex gap-4 pt-4">
-            <Button
-              variant="primary"
-              onClick={() => navigate("/obiekty")}
-            >
-              Przejdź do obiektów
-            </Button>
-
-            <Button
-              variant="secondary"
-              onClick={() => navigate("/wodowskazy")}
-            >
-              Przejdź do wodowskazów
-            </Button>
-          </div>
+          <button
+            onClick={() => navigate("/wodowskazy")}
+            className="
+              w-full
+              py-5
+              rounded-xl
+              bg-primary
+              text-white
+              text-lg
+              font-semibold
+              shadow-md
+              active:scale-[0.98]
+              transition
+            "
+          >
+            Wodowskazy
+          </button>
 
         </div>
-      </Card>
+
+      </div>
 
     </Layout>
   )

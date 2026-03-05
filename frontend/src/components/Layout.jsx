@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom"
 import { useTheme } from "../context/ThemeContext"
 import { motion } from "framer-motion"
 
-function Layout({ children, title, showHomeButton = true }) {
+function Layout({ children, title }) {
   const navigate = useNavigate()
   const { theme, toggleTheme } = useTheme()
 
@@ -11,8 +11,15 @@ function Layout({ children, title, showHomeButton = true }) {
       
       <header className="flex justify-between items-center px-8 py-5 border-b border-border dark:border-darkborder">
         
-        <div className="flex items-center gap-3">
-          <span className="text-xl">🌊</span>
+        <div
+          onClick={() => navigate("/home")}
+          className="flex items-center gap-3 cursor-pointer"
+        >
+          <img
+            src="/logo.jpg"
+            alt="Strażnik Wody"
+            className="h-10 w-auto object-contain"
+          />
           <h1 className="text-lg font-semibold text-primary dark:text-[#B9D6F2]">
             Strażnik Wody
           </h1>
@@ -20,24 +27,6 @@ function Layout({ children, title, showHomeButton = true }) {
 
         <div className="flex items-center gap-3">
           
-          {showHomeButton && (
-            <button
-              onClick={() => navigate("/home")}
-              className="
-                px-4 py-2 rounded-lg 
-                border border-primary 
-                text-primary 
-                hover:bg-primary hover:text-white 
-                dark:border-darkprimary 
-                dark:text-[#B9D6F2] 
-                dark:hover:bg-darkprimary 
-                transition
-              "
-            >
-              Strona główna
-            </button>
-          )}
-
           <button
             onClick={toggleTheme}
             className="

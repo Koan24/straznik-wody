@@ -30,7 +30,7 @@ function Home() {
       : null
 
   return (
-    <Layout title="Panel systemu" showHomeButton={false}>
+    <Layout title="Panel systemu">
       
       <div className="grid md:grid-cols-3 gap-6 mb-10">
 
@@ -71,7 +71,7 @@ function Home() {
               <div className="font-medium">
                 {ostatnieZgloszenie.tytul}
               </div>
-              <div className="text-gray-600 dark:text-[#93C1DD] dark:text-gray-400">
+              <div className="text-gray-600 dark:text-[#93C1DD]">
                 {ostatnieZgloszenie.opis}
               </div>
             </div>

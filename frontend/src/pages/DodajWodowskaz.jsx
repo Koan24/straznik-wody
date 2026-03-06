@@ -6,6 +6,7 @@ import Button from "../components/Button"
 import Card from "../components/Card"
 import Layout from "../components/Layout"
 import { useToast } from "../context/ToastContext"
+import FloatingInput from "../components/FloatingInput"
 
 function ClickHandler({ setLat, setLng }) {
   useMapEvents({
@@ -42,25 +43,25 @@ function DodajWodowskaz() {
       <Card>
         <div className="space-y-6">
 
-          <input
-            placeholder="Nazwa punktu"
+          <FloatingInput
+            label="Nazwa punktu"
             value={nazwa}
             onChange={e => setNazwa(e.target.value)}
             className="
               w-full px-4 py-3 rounded-lg
               border border-border dark:border-darkborder
               bg-surface dark:bg-darkbg
-              text-black dark:text-[#B9D6F2]
+              text-foreground dark:text-[#B9D6F2]
               focus:outline-none focus:ring-2 focus:ring-primary
               transition
             "
           />
 
-          <div className="rounded-lg overflow-hidden border border-border dark:border-darkborder">
+          <div className="rounded-lg overflow-hidden border border-border dark:border-darkborder mb-24">
             <MapContainer
               center={[51.1079, 17.0385]}
               zoom={13}
-              className="h-[300px] w-full"
+              className="h-[240px] w-full"
             >
               <TileLayer
                 attribution="© OpenStreetMap"

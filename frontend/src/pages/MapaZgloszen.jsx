@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
 import L from "leaflet"
 import { useZgloszenia } from "../context/ZgloszeniaContext"
 import Layout from "../components/Layout"
+import { useEffect, useState } from "react"
 
 // Fix ikon (Leaflet + Vite bug)
 delete L.Icon.Default.prototype._getIconUrl
@@ -18,17 +19,32 @@ L.Icon.Default.mergeOptions({
 function MapaZgloszen() {
   const navigate = useNavigate()
   const { zgloszenia } = useZgloszenia()
+  const [center, setCenter] = useState([51.1079, 17.0385])
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setCenter([
+            pos.coords.latitude,
+            pos.coords.longitude
+          ])
+        },
+        () => {}
+      )
+    }
+  }, [])
 
   return (
     <Layout title="Mapa zgłoszeń">
 
       <div className="space-y-4">
 
-        <div className="rounded-xl overflow-hidden border border-border dark:border-darkborder">
+        <div className="relavite rounded-xl overflow-hidden border border-border dark:border-darkborder mb-32">
           <MapContainer
-            center={[51.1079, 17.0385]}
-            zoom={13}
-            className="h-[72vh] w-full"
+            center={center}
+            zoom={15}
+            className="h-[60vh] w-full"
           >
             <TileLayer
               attribution="© OpenStreetMap"

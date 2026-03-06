@@ -9,6 +9,8 @@ function Card({ children }) {
       className="
         bg-surface 
         dark:bg-darksurface 
+        text-gray-900
+        dar:text-gray-100
         rounded-2xl 
         shadow-card 
         border 

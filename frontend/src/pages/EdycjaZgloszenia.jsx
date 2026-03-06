@@ -5,6 +5,7 @@ import Button from "../components/Button"
 import Card from "../components/Card"
 import Layout from "../components/Layout"
 import { useToast } from "../context/ToastContext"
+import FloatingInput from "../components/FloatingInput"
 
 function EdycjaZgloszenia() {
   const { id } = useParams()
@@ -52,29 +53,29 @@ function EdycjaZgloszenia() {
       <Card>
         <div className="space-y-6">
 
-          <input
+          <FloatingInput
             value={tytul}
             onChange={e => setTytul(e.target.value)}
-            placeholder="Tytuł"
+            label="Tytuł"
             className="
               w-full px-4 py-3 rounded-lg
               border border-border dark:border-darkborder
               bg-surface dark:bg-darkbg
-              text-black dark:text-[#B9D6F2]
+              text-foreground dark:text-[#B9D6F2]
               focus:outline-none focus:ring-2 focus:ring-primary
               transition
             "
           />
 
-          <input
+          <FloatingInput
             value={lokalizacja}
             onChange={e => setLokalizacja(e.target.value)}
-            placeholder="Lokalizacja"
+            label="Lokalizacja"
             className="
               w-full px-4 py-3 rounded-lg
               border border-border dark:border-darkborder
               bg-surface dark:bg-darkbg
-              text-black dark:text-[#B9D6F2]
+              text-foreground dark:text-[#B9D6F2]
               focus:outline-none focus:ring-2 focus:ring-primary
               transition
             "
@@ -89,7 +90,7 @@ function EdycjaZgloszenia() {
               w-full px-4 py-3 rounded-lg
               border border-border dark:border-darkborder
               bg-surface dark:bg-darkbg
-              text-black dark:text-[#B9D6F2]
+              text-foreground dark:text-[#B9D6F2]
               focus:outline-none focus:ring-2 focus:ring-primary
               transition
             "

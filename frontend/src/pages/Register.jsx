@@ -3,6 +3,7 @@ import { useState } from "react"
 import Button from "../components/Button"
 import { useToast } from "../context/ToastContext"
 import { useAuth } from "../context/AuthContext"
+import FloatingInput from "../components/FloatingInput"
 
 function Register() {
   const navigate = useNavigate()
@@ -59,22 +60,22 @@ function Register() {
       error
         ? "border-danger"
         : "border-border dark:border-darkborder"
-    } bg-surface dark:bg-darkbg text-black dark:text-[#B9D6F2] focus:outline-none focus:ring-2 focus:ring-primary transition`
+    } bg-surface dark:bg-darkbg text-foreround dark:text-[#B9D6F2] focus:outline-none focus:ring-2 focus:ring-primary transition`
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background dark:bg-darkbg transition-colors duration-300">
       
       <div className="bg-surface dark:bg-darksurface p-10 rounded-2xl shadow-card border border-border dark:border-darkborder w-full max-w-md">
         
-        <h2 className="text-2xl font-bold text-center mb-8 text-black dark:text-[#B9D6F2]">
+        <h2 className="text-2xl font-bold text-center mb-8 text-foreground dark:text-[#B9D6F2]">
           Rejestracja
         </h2>
 
         <div className="space-y-5">
 
           <div>
-            <input
-              placeholder="Imię"
+            <FloatingInput
+              label="Imię"
               value={imie}
               onChange={(e) => {
                 setImie(e.target.value)
@@ -88,9 +89,9 @@ function Register() {
           </div>
 
           <div>
-            <input
+            <FloatingInput
               type="email"
-              placeholder="Email"
+              label="Email"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value)
@@ -104,9 +105,9 @@ function Register() {
           </div>
 
           <div>
-            <input
+            <FloatingInput
               type="password"
-              placeholder="Hasło"
+              label="Hasło"
               value={haslo}
               onChange={(e) => {
                 setHaslo(e.target.value)
@@ -119,16 +120,26 @@ function Register() {
             )}
           </div>
 
-          <Button variant="primary" onClick={handleRegister} disabled={loading}>
-            {loading ? "Rejestracja..." : "Zarejestruj"}
-          </Button>
+          <div className="space-y-3 pt-2">
 
-          <Button
-            variant="secondary"
-            onClick={() => navigate("/")}
-          >
-            Powrót
-          </Button>
+            <Button
+              variant="primary"
+              onClick={handleRegister}
+              disabled={loading}
+              className="w-full py-3"
+            >
+              {loading ? "Rejestracja..." : "Zarejestruj"}
+            </Button>
+
+            <Button
+              variant="secondary"
+              onClick={() => navigate("/")}
+              className="w-full py-3"
+            >
+              Powrót
+            </Button>
+
+          </div>
 
         </div>
       </div>

@@ -6,6 +6,7 @@ import Layout from "../components/Layout"
 import Button from "../components/Button"
 import Card from "../components/Card"
 import { useToast } from "../context/ToastContext"
+import FloatingInput from "../components/FloatingInput"
 
 function ClickHandler({ setLat, setLng }) {
   useMapEvents({
@@ -63,7 +64,7 @@ function Zgloszenie() {
     w-full px-4 py-3 rounded-lg
     border border-border dark:border-darkborder
     bg-surface dark:bg-darkbg
-    text-black dark:text-[#B9D6F2]
+    text-foreground dark:text-[#B9D6F2]
     focus:outline-none focus:ring-2 focus:ring-primary
     transition
   `
@@ -73,8 +74,8 @@ function Zgloszenie() {
       <Card>
         <div className="space-y-6">
 
-          <input
-            placeholder="Tytuł"
+          <FloatingInput
+            label="Tytuł"
             value={tytul}
             onChange={(e) => setTytul(e.target.value)}
             className={inputClass}
@@ -129,11 +130,12 @@ function Zgloszenie() {
             Wybierz lokalizację na mapie:
           </div>
 
-          <div className="rounded-xl overflow-hidden border border-border dark:border-darkborder">
+          <div className="relative rounded-xl overflow-hidden border border-border dark:border-darkborder mb-40">
             <MapContainer
               center={[51.1079, 17.0385]}
               zoom={13}
-              className="h-[300px] w-full"
+              className="h-[200px] w-full"
+              style={{ zIndex: 0 }}
             >
               <TileLayer
                 attribution="© OpenStreetMap"

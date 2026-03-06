@@ -3,6 +3,7 @@ import { useState } from "react"
 import Button from "../components/Button"
 import { useToast } from "../context/ToastContext"
 import { useAuth } from "../context/AuthContext"
+import FloatingInput from "../components/FloatingInput"
 
 function Login() {
   const navigate = useNavigate()
@@ -36,28 +37,28 @@ function Login() {
   
       <div className="bg-surface dark:bg-darksurface p-10 rounded-2xl shadow-card border border-border dark:border-darkborder w-full max-w-md">
     
-        <h2 className="text-2xl font-bold text-center mb-8 text-black dark:text-[#B9D6F2]">
+        <h2 className="text-2xl font-bold text-center mb-8 text-foreground dark:text-[#B9D6F2]">
           Logowanie
         </h2>
 
         <div className="space-y-5">
 
-          <input
-            placeholder="Email"
+          <FloatingInput
+            label="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="
               w-full px-4 py-3 rounded-lg
               border border-border dark:border-darkborder
               bg-surface dark:bg-darkbg
-              text-black dark:text-[#B9D6F2]
+              text-foreground dark:text-[#B9D6F2]
               focus:outline-none focus:ring-2 focus:ring-primary
               transition
             "
           />
     
-          <input
-            placeholder="Hasło"
+          <FloatingInput
+            label="Hasło"
             type="password"
             value={haslo}
             onChange={(e) => setHaslo(e.target.value)}
@@ -65,19 +66,25 @@ function Login() {
               w-full px-4 py-3 rounded-lg
               border border-border dark:border-darkborder
               bg-surface dark:bg-darkbg
-              text-black dark:text-[#B9D6F2]
+              text-foreground dark:text-[#B9D6F2]
               focus:outline-none focus:ring-2 focus:ring-primary
               transition
             "
           />
 
-          <Button variant="primary" onClick={handleLogin} disabled={loading}>
+          <Button
+            variant="primary"
+            onClick={handleLogin}
+            disabled={loading}
+            className="w-full py-3"
+          >
             {loading ? "Logowanie..." : "Zaloguj"}
           </Button>
 
           <Button
             variant="secondary"
             onClick={() => navigate("/register")}
+            className="w-full py-3"
           >
             Rejestracja
           </Button>

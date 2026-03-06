@@ -5,6 +5,7 @@ import Layout from "../components/Layout"
 import Button from "../components/Button"
 import Card from "../components/Card"
 import { useToast } from "../context/ToastContext"
+import FloatingInput from "../components/FloatingInput"
 
 function DodajUzytkownika() {
   const [imie, setImie] = useState("")
@@ -39,22 +40,22 @@ function DodajUzytkownika() {
       <Card>
         <div className="space-y-5">
 
-          <input
-            placeholder="Imię"
+          <FloatingInput
+            label="Imię"
             value={imie}
             onChange={e => setImie(e.target.value)}
             className="
               w-full px-4 py-3 rounded-lg
               border border-border dark:border-darkborder
               bg-surface dark:bg-darkbg
-              text-black dark:text-[#B9D6F2]
+              text-foreground dark:text-[#B9D6F2]
               focus:outline-none focus:ring-2 focus:ring-primary
               transition
             "
           />
 
-          <input
-            type="email"
+          <FloatingInput
+            label="email"
             placeholder="Email"
             value={email}
             onChange={e => setEmail(e.target.value)}
@@ -62,7 +63,7 @@ function DodajUzytkownika() {
               w-full px-4 py-3 rounded-lg
               border border-border dark:border-darkborder
               bg-surface dark:bg-darkbg
-              text-black dark:text-[#B9D6F2]
+              text-foreground dark:text-[#B9D6F2]
               focus:outline-none focus:ring-2 focus:ring-primary
               transition
             "
@@ -75,7 +76,7 @@ function DodajUzytkownika() {
               w-full px-4 py-3 rounded-lg
               border border-border dark:border-darkborder
               bg-surface dark:bg-darkbg
-              text-black dark:text-[#B9D6F2]
+              text-foreground dark:text-[#B9D6F2]
               focus:outline-none focus:ring-2 focus:ring-primary
               transition
             "

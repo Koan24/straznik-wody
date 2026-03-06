@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom"
 import { useTheme } from "../context/ThemeContext"
-import { motion } from "framer-motion"
+import BottomNav from "./BottomNav"
+import FAB from "./FAB"
 
 function Layout({ children, title }) {
   const navigate = useNavigate()
@@ -30,12 +31,12 @@ function Layout({ children, title }) {
           <button
             onClick={toggleTheme}
             className="
-              px-4 py-2 rounded-lg 
-              border border-border 
-              dark:border-darkborder 
+              px-4 py-2 rounded-lg
+              border border-border
+              dark:border-darkborder
               bg-surface dark:bg-darksurface
-              hover:bg-surfaceAlt 
-              dark:hover:bg-darksurfaceAlt 
+              hover:bg-surfaceAlt
+              dark:hover:bg-darksurfaceAlt
               transition
             "
           >
@@ -45,11 +46,11 @@ function Layout({ children, title }) {
           <button
             onClick={() => navigate("/")}
             className="
-              px-4 py-2 rounded-lg 
-              border border-danger 
-              text-danger 
-              hover:bg-danger 
-              hover:text-white 
+              px-4 py-2 rounded-lg
+              border border-danger
+              text-danger
+              hover:bg-danger
+              hover:text-white
               transition-all duration-200
             "
           >
@@ -59,12 +60,16 @@ function Layout({ children, title }) {
         </div>
       </header>
 
-      <main className="max-w-md mx-auto px-5 py-6">
-        <h2 className="text-2xl font-bold mb-8 text-black dark:text-[#B9D6F2]">
+      <main className="max-w-md mx-auto px-5 py-6 pb-36">
+        <h2 className="text-2xl font-bold mb-8 text-foreground dark:text-[#B9D6F2]">
           {title}
         </h2>
         {children}
       </main>
+
+      <BottomNav />
+      <FAB />
+
     </div>
   )
 }

@@ -5,6 +5,7 @@ import Layout from "../components/Layout"
 import Button from "../components/Button"
 import Card from "../components/Card"
 import { useToast } from "../context/ToastContext"
+import FloatingInput from "../components/FloatingInput"
 
 function DodajPomiar() {
   const [wartosc, setWartosc] = useState("")
@@ -60,7 +61,7 @@ function DodajPomiar() {
               w-full px-4 py-3 rounded-lg
               border border-border dark:border-darkborder
               bg-surface dark:bg-darkbg
-              text-black dark:text-[#B9D6F2]
+              text-foreground dark:text-[#B9D6F2]
               focus:outline-none focus:ring-2 focus:ring-primary
               transition
             "
@@ -73,16 +74,16 @@ function DodajPomiar() {
             ))}
           </select>
 
-          <input
+          <FloatingInput
             type="number"
-            placeholder="Poziom wody (cm)"
+            label="Poziom wody (cm)"
             value={wartosc}
             onChange={(e) => setWartosc(e.target.value)}
             className="
               w-full px-4 py-3 rounded-lg
               border border-border dark:border-darkborder
               bg-surface dark:bg-darkbg
-              text-black dark:text-[#B9D6F2]
+              text-foreground dark:text-[#B9D6F2]
               focus:outline-none focus:ring-2 focus:ring-primary
               transition
             "

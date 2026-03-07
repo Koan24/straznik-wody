@@ -48,6 +48,25 @@ function Wodowskazy() {
           </button>
 
           <button
+            // variant="primary"
+            onClick={() => navigate("/wodowskazy/pomiar")}
+            className="
+              w-full
+              py-5
+              rounded-xl
+              bg-primary
+              text-white
+              text-lg
+              font-semibold
+              shadow-md
+              active:scale-[0.98]
+              transition
+            "
+          >
+            Dodaj pomiar
+          </button>
+
+          <button
             onClick={() => navigate("/home")}
             className="
               w-full

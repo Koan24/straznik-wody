@@ -23,6 +23,7 @@ import EdycjaZgloszenia from "./pages/EdycjaZgloszenia"
 import DodajWodowskaz from "./pages/DodajWodowskaz"
 import MapaWodowskazow from "./pages/MapaWodowskazow"
 import SzczegolyWodowskazu from "./pages/SzczegolyWodowskazu"
+import WybierzLokalizacje from "./pages/WybierzLokalizacje"
 
 import DodajUzytkownika from "./pages/DodajUzytkownika"
 
@@ -47,6 +48,9 @@ function App() {
         <Route path="/wodowskazy/:id" element={<SzczegolyWodowskazu />} />
         <Route path="/wodowskazy/archiwum" element={<ArchiwumPomiarow />} />
         <Route path="/wodowskazy/wykres" element={<WykresPomiarow />} />
+        <Route path="/wodowskazy/pomiar" element={<DodajPomiar />} />
+        <Route path="/wodowskazy/:id/pomiar" element={<DodajPomiar />} />
+        <Route path="/mapa-wybor-lokalizacji" element={<WybierzLokalizacje />} />
 
         <Route path="/admin" element={<Admin />} />
         <Route path="/admin/dodaj" element={<DodajUzytkownika />} />

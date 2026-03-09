@@ -40,7 +40,7 @@ function MapaZgloszen() {
 
       <div className="space-y-4">
 
-        <div className="relavite rounded-xl overflow-hidden border border-border dark:border-darkborder mb-32">
+        <div className="relative rounded-xl overflow-hidden border border-border dark:border-darkborder mb-2">
           <MapContainer
             center={center}
             zoom={15}
@@ -75,6 +75,7 @@ function MapaZgloszen() {
           onClick={() => navigate("/obiekty")}
           className="
             w-full
+            mt-2
             py-4
             rounded-xl
             border

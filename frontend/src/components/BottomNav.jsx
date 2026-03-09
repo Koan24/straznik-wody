@@ -35,7 +35,8 @@ function BottomNav() {
   }
 
   return (
-    <div className="
+    <div
+      className="
       fixed
       bottom-0
       left-0
@@ -47,10 +48,12 @@ function BottomNav() {
       border-border
       dark:border-darkborder
       flex
-      justify-around
+      justify-between
       items-center
+      px-2
       z-[1000]
-    ">
+    "
+    >
 
       {items.map((item) => {
 
@@ -65,11 +68,13 @@ function BottomNav() {
               flex-col
               items-center
               justify-center
+              gap-1
+              w-full
+              h-full
               text-xs
-              px-4
-              py-2
               rounded-xl
               transition
+              active:scale-95
               ${
                 active
                   ? "bg-primary/20 text-primary dark:text-[#B9D6F2]"
@@ -78,11 +83,11 @@ function BottomNav() {
             `}
           >
 
-            <span className="mb-1">
-              {item.icon}
-            </span>
+            {item.icon}
 
-            {item.label}
+            <span>
+              {item.label}
+            </span>
 
           </button>
         )

@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom"
 import { useState } from "react"
+import { Plus } from "lucide-react"
 
 function FAB() {
 
@@ -35,14 +36,17 @@ function FAB() {
         className="
           w-14 h-14 rounded-full
           bg-primary text-white
-          text-3xl
           flex items-center justify-center
           shadow-lg
           hover:scale-105
           transition
         "
       >
-        +
+        <Plus
+          size={28}
+          strokeWidth={3}
+          className={`transition-transform ${open ? "rotate-45" : ""}`}
+        />
       </button>
 
     </div>

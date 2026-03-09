@@ -10,14 +10,14 @@ function Layout({ children, title }) {
   return (
     <div className="min-h-screen bg-background dark:bg-darkbg transition-colors duration-300">
       
-      <header className="flex justify-between items-center px-4 py-3 border-b border-border dark:border-darkborder">
+      <header className="fixed top-0 left-0 right-0 z-[1000] flex justify-between items-center px-4 py-3 bg-background dark:bg-darkbg border-b border-border dark:border-darkborder">
         
         <div
           onClick={() => navigate("/home")}
           className="flex items-center gap-3 cursor-pointer"
         >
           <img
-            src="/logo.jpg"
+            src="/logo.webp"
             alt="Strażnik Wody"
             className="h-8 w-auto object-contain"
           />

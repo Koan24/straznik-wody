@@ -19,7 +19,7 @@ export function ToastProvider({ children }) {
     <ToastContext.Provider value={{ addToast }}>
       {children}
 
-      <div className="fixed top-5 right-5 z-50 space-y-3">
+      <div className="fixed top-5 right-5 z-[2000] space-y-3">
         <AnimatePresence>
           {toasts.map(toast => (
             <motion.div

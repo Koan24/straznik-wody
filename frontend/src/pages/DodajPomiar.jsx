@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom"
+import { useParams, useNavigate, useLocation } from "react-router-dom"
 import { useState } from "react"
 import Layout from "../components/Layout"
 import Button from "../components/Button"
@@ -11,19 +11,22 @@ function DodajPomiar() {
 
   const { id } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
+
   const { wodowskazy } = useWodowskazy()
   const { addToast } = useToast()
 
-  const [poziom, setPoziom] = useState("")
-  const [komentarz, setKomentarz] = useState("")
-  const [data, setData] = useState(new Date().toISOString().slice(0,16))
+  const [poziom, setPoziom] = useState(location.state?.poziom || "")
+  const [komentarz, setKomentarz] = useState(location.state?.komentarz || "")
+  const [data, setData] = useState(location.state?.data || new Date().toISOString().slice(0,16))
+  const [gps, setGps] = useState(location.state?.gps || null)
   const [zdjecie, setZdjecie] = useState(null)
-  const [gps, setGps] = useState(null)
   const [loading, setLoading] = useState(false)
 
   const wodowskaz = wodowskazy.find(w => String(w.id) === String(id))
 
   const pobierzGPS = () => {
+
     if (!navigator.geolocation) {
       addToast("GPS niedostępny", "error")
       return
@@ -37,15 +40,14 @@ function DodajPomiar() {
         })
         addToast("Pobrano lokalizację", "success")
       },
-      () => {
-        addToast("Nie udało się pobrać GPS", "error")
-      }
+      () => addToast("Nie udało się pobrać GPS", "error")
     )
   }
 
   if (!id) {
     return (
       <Layout>
+
         <div className="p-6 space-y-6">
 
           <h1 className="text-xl font-bold text-foreground dark:text-[#B9D6F2]">
@@ -55,6 +57,7 @@ function DodajPomiar() {
           <div className="space-y-4">
 
             {wodowskazy.map(w => (
+
               <Card key={w.id}>
 
                 <div className="flex justify-between items-center">
@@ -79,6 +82,7 @@ function DodajPomiar() {
                 </div>
 
               </Card>
+
             ))}
 
           </div>
@@ -91,6 +95,7 @@ function DodajPomiar() {
           </Button>
 
         </div>
+
       </Layout>
     )
   }
@@ -98,11 +103,10 @@ function DodajPomiar() {
   if (!wodowskaz) {
     return (
       <Layout>
+
         <div className="p-6">
 
-          <h1 className="text-xl font-bold mb-6">
-            Błąd
-          </h1>
+          <h1 className="text-xl font-bold mb-6">Błąd</h1>
 
           <Card>
             <div className="text-red-500">
@@ -120,6 +124,7 @@ function DodajPomiar() {
           </div>
 
         </div>
+
       </Layout>
     )
   }
@@ -151,8 +156,13 @@ function DodajPomiar() {
         formData.append("zdjecie", zdjecie)
       }
 
+      const token = localStorage.getItem("token")
+
       const res = await fetch("http://localhost:4000/api/pomiary", {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
         body: formData
       })
 
@@ -182,9 +192,7 @@ function DodajPomiar() {
 
           <div className="space-y-5">
 
-            <h2 className="font-semibold">
-              Dodaj pomiar
-            </h2>
+            <h2 className="font-semibold">Dodaj pomiar</h2>
 
             <FloatingInput
               label="Poziom wody (cm)"
@@ -194,15 +202,20 @@ function DodajPomiar() {
 
             <div>
               <label className="text-sm opacity-80">Data pomiaru</label>
+
               <input
                 type="datetime-local"
                 value={data}
                 onChange={(e) => setData(e.target.value)}
                 className="
-                  w-full mt-1 px-4 py-3 rounded-lg bg-surface dark:bg-darkbg text-foreground 
-                  dark:text-[#B9D6F2] border border-border dark:border-darkborder focus:outline-none 
-                  focus:rinf-2 focus:ring-primary"
+                  w-full mt-1 px-4 py-3 rounded-lg
+                  bg-surface dark:bg-darkbg
+                  text-foreground dark:text-[#B9D6F2]
+                  border border-border dark:border-darkborder
+                  focus:outline-none focus:ring-2 focus:ring-primary
+                "
               />
+
             </div>
 
             <div className="space-y-2">
@@ -214,6 +227,7 @@ function DodajPomiar() {
               <div className="flex items-center gap-3">
 
                 <label className="cursor-pointer">
+
                   <input
                     type="file"
                     accept="image/*"
@@ -229,9 +243,10 @@ function DodajPomiar() {
                   ">
                     Wybierz zdjęcie
                   </span>
+
                 </label>
 
-                <span className="text-sm opacity-70 text:foreground dark:text-[#B9D6F2]">
+                <span className="text-sm opacity-70 text-foreground dark:text-[#B9D6F2]">
                   {zdjecie ? zdjecie.name : "Nie wybrano pliku"}
                 </span>
 
@@ -253,14 +268,18 @@ function DodajPomiar() {
             </Button>
 
             {gps && (
-              <div className="text-sm opacity-70">
-                GPS: {gps.lat.toFixed(5)}, {gps.lng.toFixed(5)}
+              <div className="text-sm text-green-500">
+                Lokalizacja zapisana: {gps.lat.toFixed(5)}, {gps.lng.toFixed(5)}
               </div>
             )}
 
             <Button
               variant="secondary"
-              onClick={() => navigate("/mapa-wybor-lokalizacji")}
+              onClick={() =>
+                navigate("/mapa-wybor-lokalizacji", {
+                  state: { poziom, komentarz, data, gps }
+                })
+              }
             >
               Wskaż lokalizację na mapie
             </Button>

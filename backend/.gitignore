@@ -37,3 +37,6 @@ prisma/dev.db
 # Build outputs (if using TypeScript)
 dist/
 build/
+
+# Uploads
+uploads/

@@ -22,6 +22,9 @@ function DodajPomiar() {
   const [loading, setLoading] = useState(false)
 
   const [zdjecie, setZdjecie] = useState(null)
+  const [powrotZM, setPowrotZM] = useState(false)
+
+  const [powrotZMapy, setPowrotZMapy] = useState(false)
 
   const wodowskaz = wodowskazy.find(w => String(w.id) === String(id))
 
@@ -37,7 +40,10 @@ function DodajPomiar() {
       if (parsed.poziom !== undefined) setPoziom(parsed.poziom)
       if (parsed.komentarz !== undefined) setKomentarz(parsed.komentarz)
       if (parsed.data !== undefined) setData(parsed.data)
-      if (parsed.gps !== undefined) setGps(parsed.gps)
+      if (parsed.gps !== undefined) {
+        setGps(parsed.gps)
+        setPowrotZM(true)
+      } 
     }
 
     restoreForm()
@@ -93,34 +99,34 @@ function DodajPomiar() {
   }
 
   const handleSubmit = async () => {
-    
+
     if (!poziom) {
       addToast("Podaj poziom wody", "error")
       return
     }
-  
+
     setLoading(true)
-  
+
     try {
-    
+
       const token = localStorage.getItem("token")
-    
+
       const formData = new FormData()
-    
+
       formData.append("wodowskazId", wodowskaz.id)
       formData.append("wartosc", poziom)
       formData.append("data", data)
       formData.append("komentarz", komentarz)
-    
+
       if (gps) {
         formData.append("lat", gps.lat)
         formData.append("lng", gps.lng)
       }
-    
+
       if (zdjecie) {
         formData.append("zdjecie", zdjecie)
       }
-    
+
       const res = await fetch("http://localhost:4000/api/pomiary", {
         method: "POST",
         headers: {
@@ -128,19 +134,19 @@ function DodajPomiar() {
         },
         body: formData
       })
-    
+
       if (!res.ok) throw new Error("Błąd zapisu")
-      
+
       sessionStorage.removeItem("pomiarForm")
-  
+
       addToast("Pomiar zapisany", "success")
-  
+
       navigate(`/wodowskazy/${wodowskaz.id}`)
-  
+
     } catch (e) {
       addToast(e.message || "Błąd", "error")
     }
-  
+
     setLoading(false)
   }
 
@@ -176,6 +182,11 @@ function DodajPomiar() {
               </Card>
             ))}
           </div>
+          {powrotZM && !zdjecie && (
+            <div className="text-xs text-yellow-500 flex items-center gap-1">
+              Po powrocie z mapy wybierz zdjęcie ponownie
+            </div>
+          )}
 
           <Button
             variant="secondary"

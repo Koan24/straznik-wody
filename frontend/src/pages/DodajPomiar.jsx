@@ -1,5 +1,5 @@
-import { useParams, useNavigate, useLocation } from "react-router-dom"
-import { useState } from "react"
+import { useParams, useNavigate } from "react-router-dom"
+import { useState, useEffect } from "react"
 import Layout from "../components/Layout"
 import Button from "../components/Button"
 import Card from "../components/Card"
@@ -11,19 +11,43 @@ function DodajPomiar() {
 
   const { id } = useParams()
   const navigate = useNavigate()
-  const location = useLocation()
 
   const { wodowskazy } = useWodowskazy()
   const { addToast } = useToast()
 
-  const [poziom, setPoziom] = useState(location.state?.poziom || "")
-  const [komentarz, setKomentarz] = useState(location.state?.komentarz || "")
-  const [data, setData] = useState(location.state?.data || new Date().toISOString().slice(0,16))
-  const [gps, setGps] = useState(location.state?.gps || null)
-  const [zdjecie, setZdjecie] = useState(null)
+  const [poziom, setPoziom] = useState("")
+  const [komentarz, setKomentarz] = useState("")
+  const [data, setData] = useState(new Date().toISOString().slice(0,16))
+  const [gps, setGps] = useState(null)
   const [loading, setLoading] = useState(false)
 
+  const [zdjecie, setZdjecie] = useState(null)
+
   const wodowskaz = wodowskazy.find(w => String(w.id) === String(id))
+
+  // 🔥 przywracanie formularza po powrocie z mapy
+  useEffect(() => {
+
+    const restoreForm = () => {
+      const saved = sessionStorage.getItem("pomiarForm")
+      if (!saved) return
+
+      const parsed = JSON.parse(saved)
+
+      if (parsed.poziom !== undefined) setPoziom(parsed.poziom)
+      if (parsed.komentarz !== undefined) setKomentarz(parsed.komentarz)
+      if (parsed.data !== undefined) setData(parsed.data)
+      if (parsed.gps !== undefined) setGps(parsed.gps)
+    }
+
+    restoreForm()
+    window.addEventListener("focus", restoreForm)
+
+    return () => {
+      window.removeEventListener("focus", restoreForm)
+    }
+
+  }, [])
 
   const pobierzGPS = () => {
 
@@ -34,20 +58,95 @@ function DodajPomiar() {
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setGps({
+
+        const position = {
           lat: pos.coords.latitude,
           lng: pos.coords.longitude
-        })
+        }
+
+        setGps(position)
+
+        const saved = sessionStorage.getItem("pomiarForm")
+        const parsed = saved ? JSON.parse(saved) : {}
+
+        parsed.gps = position
+        sessionStorage.setItem("pomiarForm", JSON.stringify(parsed))
+
         addToast("Pobrano lokalizację", "success")
       },
       () => addToast("Nie udało się pobrać GPS", "error")
     )
   }
 
+  const openMap = () => {
+
+    const formState = {
+      poziom,
+      komentarz,
+      data,
+      gps
+    }
+
+    sessionStorage.setItem("pomiarForm", JSON.stringify(formState))
+
+    navigate("/mapa-wybor-lokalizacji")
+  }
+
+  const handleSubmit = async () => {
+    
+    if (!poziom) {
+      addToast("Podaj poziom wody", "error")
+      return
+    }
+  
+    setLoading(true)
+  
+    try {
+    
+      const token = localStorage.getItem("token")
+    
+      const formData = new FormData()
+    
+      formData.append("wodowskazId", wodowskaz.id)
+      formData.append("wartosc", poziom)
+      formData.append("data", data)
+      formData.append("komentarz", komentarz)
+    
+      if (gps) {
+        formData.append("lat", gps.lat)
+        formData.append("lng", gps.lng)
+      }
+    
+      if (zdjecie) {
+        formData.append("zdjecie", zdjecie)
+      }
+    
+      const res = await fetch("http://localhost:4000/api/pomiary", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: formData
+      })
+    
+      if (!res.ok) throw new Error("Błąd zapisu")
+      
+      sessionStorage.removeItem("pomiarForm")
+  
+      addToast("Pomiar zapisany", "success")
+  
+      navigate(`/wodowskazy/${wodowskaz.id}`)
+  
+    } catch (e) {
+      addToast(e.message || "Błąd", "error")
+    }
+  
+    setLoading(false)
+  }
+
   if (!id) {
     return (
       <Layout>
-
         <div className="p-6 space-y-6">
 
           <h1 className="text-xl font-bold text-foreground dark:text-[#B9D6F2]">
@@ -55,18 +154,13 @@ function DodajPomiar() {
           </h1>
 
           <div className="space-y-4">
-
             {wodowskazy.map(w => (
-
               <Card key={w.id}>
-
                 <div className="flex justify-between items-center">
-
                   <div>
                     <div className="font-semibold text-foreground dark:text-[#B9D6F2]">
                       {w.nazwa}
                     </div>
-
                     <div className="text-sm opacity-70 text-foreground dark:text-[#B9D6F2]">
                       {w.lat}, {w.lng}
                     </div>
@@ -78,13 +172,9 @@ function DodajPomiar() {
                   >
                     Wybierz
                   </Button>
-
                 </div>
-
               </Card>
-
             ))}
-
           </div>
 
           <Button
@@ -95,7 +185,6 @@ function DodajPomiar() {
           </Button>
 
         </div>
-
       </Layout>
     )
   }
@@ -103,7 +192,6 @@ function DodajPomiar() {
   if (!wodowskaz) {
     return (
       <Layout>
-
         <div className="p-6">
 
           <h1 className="text-xl font-bold mb-6">Błąd</h1>
@@ -124,59 +212,8 @@ function DodajPomiar() {
           </div>
 
         </div>
-
       </Layout>
     )
-  }
-
-  const handleSubmit = async () => {
-
-    if (!poziom) {
-      addToast("Podaj poziom wody", "error")
-      return
-    }
-
-    setLoading(true)
-
-    try {
-
-      const formData = new FormData()
-
-      formData.append("wodowskazId", wodowskaz.id)
-      formData.append("poziom", poziom)
-      formData.append("data", data)
-      formData.append("komentarz", komentarz)
-
-      if (gps) {
-        formData.append("lat", gps.lat)
-        formData.append("lng", gps.lng)
-      }
-
-      if (zdjecie) {
-        formData.append("zdjecie", zdjecie)
-      }
-
-      const token = localStorage.getItem("token")
-
-      const res = await fetch("http://localhost:4000/api/pomiary", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`
-        },
-        body: formData
-      })
-
-      if (!res.ok) throw new Error("Błąd zapisu")
-
-      addToast("Pomiar zapisany", "success")
-
-      navigate(`/wodowskazy/${wodowskaz.id}`)
-
-    } catch (e) {
-      addToast(e.message || "Błąd", "error")
-    }
-
-    setLoading(false)
   }
 
   return (
@@ -207,20 +244,19 @@ function DodajPomiar() {
                 type="datetime-local"
                 value={data}
                 onChange={(e) => setData(e.target.value)}
-                className="
-                  w-full mt-1 px-4 py-3 rounded-lg
-                  bg-surface dark:bg-darkbg
-                  text-foreground dark:text-[#B9D6F2]
-                  border border-border dark:border-darkborder
-                  focus:outline-none focus:ring-2 focus:ring-primary
-                "
+                className="w-full mt-1 px-4 py-3 rounded-lg bg-surface dark:bg-darkbg text-foreground dark:text-[#B9D6F2] border border-border dark:border-darkborder focus:outline-none focus:ring-2 focus:ring-primary"
               />
-
             </div>
+
+            <FloatingInput
+              label="Komentarz"
+              value={komentarz}
+              onChange={(e) => setKomentarz(e.target.value)}
+            />
 
             <div className="space-y-2">
 
-              <label className="text-sm text-foreground dark:text-[#B9D6F2] opacity-80">
+              <label className="text-sm opacity-80">
                 Zdjęcie pomiaru
               </label>
 
@@ -235,18 +271,13 @@ function DodajPomiar() {
                     onChange={(e) => setZdjecie(e.target.files[0])}
                   />
 
-                  <span className="
-                    px-4 py-2 rounded-lg
-                    bg-primary text-white
-                    hover:opacity-90
-                    transition
-                  ">
+                  <span className="px-4 py-2 rounded-lg bg-primary text-white hover:opacity-90 transition">
                     Wybierz zdjęcie
                   </span>
 
                 </label>
 
-                <span className="text-sm opacity-70 text-foreground dark:text-[#B9D6F2]">
+                <span className="text-sm opacity-70">
                   {zdjecie ? zdjecie.name : "Nie wybrano pliku"}
                 </span>
 
@@ -254,41 +285,21 @@ function DodajPomiar() {
 
             </div>
 
-            <FloatingInput
-              label="Komentarz"
-              value={komentarz}
-              onChange={(e) => setKomentarz(e.target.value)}
-            />
-
-            <Button
-              variant="secondary"
-              onClick={pobierzGPS}
-            >
+            <Button variant="secondary" onClick={pobierzGPS}>
               Pobierz lokalizację GPS
             </Button>
 
             {gps && (
               <div className="text-sm text-green-500">
-                Lokalizacja zapisana: {gps.lat.toFixed(5)}, {gps.lng.toFixed(5)}
+                ✔ Lokalizacja zapisana: {gps.lat.toFixed(5)}, {gps.lng.toFixed(5)}
               </div>
             )}
 
-            <Button
-              variant="secondary"
-              onClick={() =>
-                navigate("/mapa-wybor-lokalizacji", {
-                  state: { poziom, komentarz, data, gps }
-                })
-              }
-            >
+            <Button variant="secondary" onClick={openMap}>
               Wskaż lokalizację na mapie
             </Button>
 
-            <Button
-              variant="primary"
-              onClick={handleSubmit}
-              disabled={loading}
-            >
+            <Button variant="primary" onClick={handleSubmit} disabled={loading}>
               {loading ? "Zapisywanie..." : "Dodaj pomiar"}
             </Button>
 

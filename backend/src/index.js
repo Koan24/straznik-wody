@@ -5,6 +5,12 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { PrismaClient } = require('@prisma/client')
 
+const multer = require('multer')
+
+const upload = multer({
+  dest: 'uploads/' //folder na zdjecia
+})
+
 const prisma = new PrismaClient()
 const app = express()
 app.use(cors())
@@ -101,17 +107,31 @@ app.get('/api/pomiary', async (req, res) => {
   res.json(pomiary)
 })
 
-app.post('/api/pomiary', auth, async (req, res) => {
-  const { wodowskazId, wartosc } = req.body
+app.post('/api/pomiary', auth, upload.single('zdjecie'), async (req, res) => {
 
-  const pomiar = await prisma.pomiar.create({
-    data: {
-      wodowskazId: Number(wodowskazId),
-      wartosc: Number(wartosc)
-    }
-  })
+  const { wodowskazId, wartosc, data, komentarz, lat, lng } = req.body
 
-  res.json(pomiar)
+  try {
+
+    const pomiar = await prisma.pomiar.create({
+      data: {
+        wodowskazId: Number(wodowskazId),
+        wartosc: Number(wartosc),
+        data: data ? new Date(data) : undefined,
+        komentarz: komentarz || null,
+        lat: lat ? Number(lat) : null,
+        lng: lng ? Number(lng) : null,
+        zdjecie: req.file ? req.file.filename : null
+      }
+    })
+
+    res.json(pomiar)
+
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'blad zapisu pomiaru' })
+  }
+
 })
 
 app.delete('/api/pomiary/:id', auth, async (req, res) => {

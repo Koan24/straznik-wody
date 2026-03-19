@@ -20,54 +20,59 @@ function WybierzLokalizacje() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const [position, setPosition] = useState(null)
+  const [position, setPosition] = useState(location.state?.gps || null)
 
   return (
     <Layout>
 
-      <div className="text-sm opacity-70 mb-2">
-        Kliknij na mapie aby wskazać lokalizację
-      </div>
+      <div className="p-4 space-y-4">
 
-      <MapContainer
-        center={[51.1,17.0]}
-        zoom={13}
-        className="h-[60vh] rounded-xl"
-      >
+        <div className="text-sm opacity-70">
+          Kliknij na mapie aby wskazać lokalizację
+        </div>
 
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-
-        <LocationPicker setPosition={setPosition} />
-
-        {position && <Marker position={position} />}
-
-      </MapContainer>
-
-      <div className="flex flex-col gap-4 mt-4">
-
-        <Button
-          variant="primary"
-          disabled={!position}
-          className="w-full py-3"
-          onClick={() =>
-            navigate(-1, {
-              state: {
-                ...location.state,
-                gps: position
-              }
-            })
-          }
+        <MapContainer
+          center={[51.1,17.0]}
+          zoom={13}
+          className="h-[60vh] rounded-xl"
         >
-          Zapisz lokalizację
-        </Button>
 
-        <Button
-          variant="secondary"
-          className="w-full py-3"
-          onClick={() => navigate(-1)}
-        >
-          Powrót
-        </Button>
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
+          <LocationPicker setPosition={setPosition} />
+
+          {position && <Marker position={position} />}
+
+        </MapContainer>
+
+        <div className="flex flex-col gap-4">
+
+          <Button
+            variant="primary"
+            disabled={!position}
+            className="w-full py-3"
+            onClick={() => {
+              const saved = sessionStorage.getItem("pomiarForm")
+              const parsed = saved ? JSON.parse(saved) : {}
+            
+              parsed.gps = position
+              sessionStorage.setItem("pomiarForm", JSON.stringify(parsed))
+            
+              navigate(-1)
+            }}
+          >
+            Zapisz lokalizację
+          </Button>
+
+          <Button
+            variant="secondary"
+            className="w-full py-3"
+            onClick={() => navigate(-1)}
+          >
+            Powrót
+          </Button>
+
+        </div>
 
       </div>
 

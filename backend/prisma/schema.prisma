@@ -72,6 +72,14 @@ model Pomiar {
 
   wartosc Float
 
+  komentarz String?
+  data      DateTime?
+
+  lat Float?
+  lng Float?
+
+  zdjecie String?
+
   userId Int?
   user   User? @relation(fields: [userId], references: [id])
 

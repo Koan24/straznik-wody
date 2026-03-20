@@ -37,21 +37,23 @@ function FloatingInput({
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         className="
-          w-full
-          px-3
-          pt-5
-          pb-2
-          rounded-lg
-          border
-          border-border
-          dark:border-darkborder
-          bg-surface
-          dark:bg-darksurface
-          focus:outline-none
-          focus:ring-2
-          focus:ring-primary
-          transition
-        "
+         w-full
+         px-3
+         pt-5
+         pb-2
+         rounded-lg
+         border
+         border-border
+         dark:border-darkborder
+         bg-surface
+         dark:bg-darksurface
+         text-foreground dark:text-white
+         placeholder:text-gray-400 dark:placeholder:text-gray-500
+         focus:outline-none
+         focus:ring-2
+         focus:ring-primary
+         transition
+      "    
       />
 
     </div>

@@ -21,7 +21,6 @@ function AnimatedNumber({ value }) {
   )
 }
 
-/* marker zgloszen */
 const zgloszenieIcon = new L.Icon({
   iconUrl:
     "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
@@ -31,7 +30,6 @@ const zgloszenieIcon = new L.Icon({
   iconAnchor: [12, 41],
 })
 
-/* marker wodowksazow */
 const wodowskazIcon = new L.Icon({
   iconUrl:
     "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
@@ -51,6 +49,17 @@ function Home() {
     zgloszenia.length > 0
       ? zgloszenia[zgloszenia.length - 1]
       : null
+
+  const wszystkiePomiary = wodowskazy.flatMap(w => w.pomiary || [])
+
+  const ostatniPomiar =
+    wszystkiePomiary.length > 0
+      ? wszystkiePomiary[wszystkiePomiary.length - 1]
+      : null
+
+  const wodowskazDoPomiaru = ostatniPomiar
+    ? wodowskazy.find(w => w.id === ostatniPomiar.wodowskazId)
+    : null
 
   return (
     <Layout title="Panel systemu">
@@ -76,9 +85,8 @@ function Home() {
 
         </div>
 
-        {/* ostatnie zgl */}
+        {/* ostatnie zgłoszenie */}
         <Card>
-
           <div className="space-y-2">
 
             <div className="font-semibold text-lg text-gray-900 dark:text-gray-100">
@@ -102,10 +110,44 @@ function Home() {
             )}
 
           </div>
-
         </Card>
 
-        {/* mini mapa */}
+        {/* ostatni pomiar */}
+        <Card>
+          <div className="space-y-2">
+
+            <div className="font-semibold text-lg text-gray-900 dark:text-gray-100">
+              Ostatni pomiar wodowskazu
+            </div>
+
+            {ostatniPomiar ? (
+              <>
+                {wodowskazDoPomiaru && (
+                  <div className="font-medium text-gray-900 dark:text-gray-100">
+                    {wodowskazDoPomiaru.nazwa}
+                  </div>
+                )}
+
+                <div className="text-sm text-gray-600 dark:text-[#93C1DD]">
+                  Poziom: {ostatniPomiar.wartosc ?? "brak danych"} cm
+                </div>
+
+                {ostatniPomiar.data && (
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    {new Date(ostatniPomiar.data).toLocaleString()}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="text-gray-500 text-sm">
+                Brak danych
+              </div>
+            )}
+
+          </div>
+        </Card>
+
+        {/* mapa */}
         <Card>
 
           <div className="space-y-3">
@@ -139,7 +181,6 @@ function Home() {
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
-                {/* wodowskazy */}
                 {wodowskazy.map((w) => (
                   <Marker
                     key={"w"+w.id}
@@ -152,7 +193,6 @@ function Home() {
                   </Marker>
                 ))}
 
-                {/* zgloszenia */}
                 {zgloszenia.map((z) =>
                   z.lat && z.lng ? (
                     <Marker

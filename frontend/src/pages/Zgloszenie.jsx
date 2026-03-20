@@ -31,6 +31,28 @@ function Zgloszenie() {
   const [rodzajUszkodzenia, setRodzajUszkodzenia] = useState("")
   const [stopien, setStopien] = useState("")
 
+  const handleGetLocation = () => {
+    if (!navigator.geolocation) {
+      addToast("Geolokalizacja nie jest wspierana", "error")
+      return
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude
+        const lng = position.coords.longitude
+
+        setLat(lat)
+        setLng(lng)
+
+        addToast("Pobrano lokalizację", "success")
+      },
+      () => {
+        addToast("Nie udało się pobrać lokalizacji", "error")
+      }
+    )
+  }
+
   const handleSubmit = () => {
     if (
       !tytul ||
@@ -125,6 +147,13 @@ function Zgloszenie() {
             rows={4}
             className={inputClass}
           />
+
+          <Button
+            onClick={handleGetLocation}
+            className="mb-3 px-4 py-2 bg-primary text-white rounded-lg"
+          >
+            Pobierz moją lokalizację
+          </Button>
 
           <div className="text-sm text-gray-600 dark:text-[#93C1DD]">
             Wybierz lokalizację na mapie:

@@ -24,11 +24,8 @@ function DodajPomiar() {
   const [zdjecie, setZdjecie] = useState(null)
   const [powrotZM, setPowrotZM] = useState(false)
 
-  const [powrotZMapy, setPowrotZMapy] = useState(false)
-
   const wodowskaz = wodowskazy.find(w => String(w.id) === String(id))
 
-  // 🔥 przywracanie formularza po powrocie z mapy
   useEffect(() => {
 
     const restoreForm = () => {
@@ -40,9 +37,14 @@ function DodajPomiar() {
       if (parsed.poziom !== undefined) setPoziom(parsed.poziom)
       if (parsed.komentarz !== undefined) setKomentarz(parsed.komentarz)
       if (parsed.data !== undefined) setData(parsed.data)
-      if (parsed.gps !== undefined) {
+
+      if (parsed.gps !== undefined && parsed.fromMap) {
         setGps(parsed.gps)
         setPowrotZM(true)
+
+        //reset flag
+        parsed.fromMap = false
+        sessionStorage.setItem("pomiarForm", JSON.stringify(parsed))
       } 
     }
 
@@ -90,7 +92,8 @@ function DodajPomiar() {
       poziom,
       komentarz,
       data,
-      gps
+      gps,
+      fromMap: true
     }
 
     sessionStorage.setItem("pomiarForm", JSON.stringify(formState))
@@ -155,7 +158,7 @@ function DodajPomiar() {
       <Layout>
         <div className="p-6 space-y-6">
 
-          <h1 className="text-xl font-bold text-foreground dark:text-[#B9D6F2]">
+          <h1 className="text-xl font-bold text-foreground dark:text-white">
             Wybierz wodowskaz
           </h1>
 
@@ -164,10 +167,10 @@ function DodajPomiar() {
               <Card key={w.id}>
                 <div className="flex justify-between items-center">
                   <div>
-                    <div className="font-semibold text-foreground dark:text-[#B9D6F2]">
+                    <div className="font-semibold text-foreground dark:text-white">
                       {w.nazwa}
                     </div>
-                    <div className="text-sm opacity-70 text-foreground dark:text-[#B9D6F2]">
+                    <div className="text-sm opacity-70 text-foreground dark:text-gray-300">
                       {w.lat}, {w.lng}
                     </div>
                   </div>
@@ -182,8 +185,9 @@ function DodajPomiar() {
               </Card>
             ))}
           </div>
+
           {powrotZM && !zdjecie && (
-            <div className="text-xs text-yellow-500 flex items-center gap-1">
+            <div className="text-xs text-yellow-400">
               Po powrocie z mapy wybierz zdjęcie ponownie
             </div>
           )}
@@ -205,10 +209,10 @@ function DodajPomiar() {
       <Layout>
         <div className="p-6">
 
-          <h1 className="text-xl font-bold mb-6">Błąd</h1>
+          <h1 className="text-xl font-bold mb-6 dark:text-white">Błąd</h1>
 
           <Card>
-            <div className="text-red-500">
+            <div className="text-red-400">
               Nie znaleziono wodowskazu
             </div>
           </Card>
@@ -232,7 +236,7 @@ function DodajPomiar() {
 
       <div className="p-6 space-y-6">
 
-        <h1 className="text-xl font-bold text-foreground dark:text-[#B9D6F2]">
+        <h1 className="text-xl font-bold text-foreground dark:text-white">
           Wodowskaz: {wodowskaz.nazwa}
         </h1>
 
@@ -240,7 +244,7 @@ function DodajPomiar() {
 
           <div className="space-y-5">
 
-            <h2 className="font-semibold">Dodaj pomiar</h2>
+            <h2 className="font-semibold dark:text-white">Dodaj pomiar</h2>
 
             <FloatingInput
               label="Poziom wody (cm)"
@@ -249,13 +253,15 @@ function DodajPomiar() {
             />
 
             <div>
-              <label className="text-sm opacity-80">Data pomiaru</label>
+              <label className="text-sm opacity-80 dark:text-gray-300">
+                Data pomiaru
+              </label>
 
               <input
                 type="datetime-local"
                 value={data}
                 onChange={(e) => setData(e.target.value)}
-                className="w-full mt-1 px-4 py-3 rounded-lg bg-surface dark:bg-darkbg text-foreground dark:text-[#B9D6F2] border border-border dark:border-darkborder focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full mt-1 px-4 py-3 rounded-lg bg-surface dark:bg-darkbg text-foreground dark:text-white border border-border dark:border-darkborder focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
@@ -267,7 +273,7 @@ function DodajPomiar() {
 
             <div className="space-y-2">
 
-              <label className="text-sm opacity-80">
+              <label className="text-sm opacity-80 dark:text-gray-300">
                 Zdjęcie pomiaru
               </label>
 
@@ -288,7 +294,7 @@ function DodajPomiar() {
 
                 </label>
 
-                <span className="text-sm opacity-70">
+                <span className="text-sm opacity-70 dark:text-gray-300">
                   {zdjecie ? zdjecie.name : "Nie wybrano pliku"}
                 </span>
 
@@ -301,7 +307,7 @@ function DodajPomiar() {
             </Button>
 
             {gps && (
-              <div className="text-sm text-green-500">
+              <div className="text-sm text-green-400">
                 ✔ Lokalizacja zapisana: {gps.lat.toFixed(5)}, {gps.lng.toFixed(5)}
               </div>
             )}
@@ -318,12 +324,25 @@ function DodajPomiar() {
 
         </Card>
 
-        <Button
-          variant="secondary"
-          onClick={() => navigate(`/wodowskazy/${wodowskaz.id}`)}
-        >
-          Powrót
-        </Button>
+        <div className="flex flex-col gap-4 pt-4">
+
+          <Button
+            variant="secondary"
+            onClick={() => navigate("/wodowskazy")}
+            className="w-full py-3 text-base"
+          >
+            Menu wodowskazów
+          </Button>
+
+          <Button
+            variant="secondary"
+            onClick={() => navigate("/wodowskazy/mapa")}
+            className="w-full py-3 text-base"
+          >
+            Mapa wodowskazów
+          </Button>
+
+        </div>
 
       </div>
 

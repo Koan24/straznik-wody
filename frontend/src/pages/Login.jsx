@@ -13,36 +13,35 @@ function Login() {
   const [haslo, setHaslo] = useState("")
   const [loading, setLoading] = useState(false)
 
-  const {addToast} = useToast()
+  const { addToast } = useToast()
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault()
+
     if (!email || !haslo) {
-      addToast("Wypełnij wszystkie pola", "error")
+      addToast("Wypelnij wszystkie pola", "error")
       return
     }
 
     setLoading(true)
     try {
       await login(email, haslo)
-      addToast("Zalogowano pomyślnie", "success")
+      addToast("Zalogowano pomyslnie", "success")
       navigate("/home")
     } catch (e) {
-      addToast(e.message || "Błąd logowania", "error")
+      addToast(e.message || "Blad logowania", "error")
     }
     setLoading(false)
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background dark:bg-darkbg transition-colors duration-300">
-  
       <div className="bg-surface dark:bg-darksurface p-10 rounded-2xl shadow-card border border-border dark:border-darkborder w-full max-w-md">
-    
         <h2 className="text-2xl font-bold text-center mb-8 text-foreground dark:text-[#B9D6F2]">
           Logowanie
         </h2>
 
-        <div className="space-y-5">
-
+        <form onSubmit={handleLogin} className="space-y-5">
           <FloatingInput
             label="Email"
             value={email}
@@ -56,9 +55,9 @@ function Login() {
               transition
             "
           />
-    
+
           <FloatingInput
-            label="Hasło"
+            label="Haslo"
             type="password"
             value={haslo}
             onChange={(e) => setHaslo(e.target.value)}
@@ -74,7 +73,7 @@ function Login() {
 
           <Button
             variant="primary"
-            onClick={handleLogin}
+            type="submit"
             disabled={loading}
             className="w-full py-3"
           >
@@ -83,13 +82,13 @@ function Login() {
 
           <Button
             variant="secondary"
+            type="button"
             onClick={() => navigate("/register")}
             className="w-full py-3"
           >
             Rejestracja
           </Button>
-
-        </div>
+        </form>
       </div>
     </div>
   )

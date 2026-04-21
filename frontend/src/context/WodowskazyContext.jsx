@@ -7,34 +7,51 @@ export function WodowskazyProvider({ children }) {
   const [wodowskazy, setWodowskazy] = useState([])
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    getWodowskazy().then(data => {
+  const pobierzWodowskazy = async () => {
+    try {
+      setLoading(true)
+      const data = await getWodowskazy()
       setWodowskazy(data || [])
+    } catch (err) {
+      console.error("Failed to load wodowskazy:", err)
+    } finally {
       setLoading(false)
-    }).catch(err => {
-      console.error('Failed to load wodowskazy:', err)
-      setLoading(false)
-    })
+    }
+  }
+
+  useEffect(() => {
+    pobierzWodowskazy()
   }, [])
 
   const dodajWodowskaz = async (nazwa, lat, lng) => {
     const newWodowskaz = await createWodowskaz({ nazwa, lat, lng })
     if (newWodowskaz) {
-      setWodowskazy(prev => [...prev, newWodowskaz])
+      await pobierzWodowskazy()
+      return newWodowskaz
     }
+    return null
   }
 
   const dodajPomiar = async (wodowskazId, wartosc) => {
-    const updated = await updateWodowskaz(wodowskazId, { pomiary: [{ id: Date.now(), wartosc: Number(wartosc), data: new Date().toLocaleString() }] })
+    const updated = await updateWodowskaz(wodowskazId, {
+      pomiary: [{ id: Date.now(), wartosc: Number(wartosc), data: new Date().toLocaleString() }]
+    })
+
     if (updated) {
-      setWodowskazy(prev =>
-        prev.map(w => w.id === wodowskazId ? updated : w)
-      )
+      await pobierzWodowskazy()
     }
   }
 
   return (
-    <WodowskazyContext.Provider value={{ wodowskazy, dodajWodowskaz, dodajPomiar, loading }}>
+    <WodowskazyContext.Provider
+      value={{
+        wodowskazy,
+        dodajWodowskaz,
+        dodajPomiar,
+        loading,
+        pobierzWodowskazy
+      }}
+    >
       {children}
     </WodowskazyContext.Provider>
   )

@@ -27,16 +27,20 @@ function DodajWodowskaz() {
   const { addToast } = useToast()
   const navigate = useNavigate()
 
-  const handleSubmit = () => {
-    if (!nazwa || lat === null || lng === null) {
-      addToast("Podaj nazwę i wybierz lokalizację", "error")
-      return
-    }
+  const handleSubmit = async () => {
+  if (!nazwa || lat === null || lng === null) {
+    addToast("Podaj nazwe i wybierz lokalizacje", "error")
+    return
+  }
 
-    dodajWodowskaz(nazwa, lat, lng)
+  try {
+    await dodajWodowskaz(nazwa, lat, lng)
     addToast("Wodowskaz zapisany poprawnie", "success")
     navigate("/wodowskazy/mapa")
+  } catch (e) {
+    addToast(e.message || "Nie udalo sie zapisac wodowskazu", "error")
   }
+}
 
   return (
     <Layout title="Nowy wodowskaz">

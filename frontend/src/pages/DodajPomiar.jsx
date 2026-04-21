@@ -8,26 +8,23 @@ import { useWodowskazy } from "../context/WodowskazyContext"
 import { useToast } from "../context/ToastContext"
 
 function DodajPomiar() {
-
   const { id } = useParams()
   const navigate = useNavigate()
 
-  const { wodowskazy } = useWodowskazy()
+  const { wodowskazy, loading: loadingWodowskazy } = useWodowskazy()
   const { addToast } = useToast()
 
   const [poziom, setPoziom] = useState("")
   const [komentarz, setKomentarz] = useState("")
-  const [data, setData] = useState(new Date().toISOString().slice(0,16))
+  const [data, setData] = useState(new Date().toISOString().slice(0, 16))
   const [gps, setGps] = useState(null)
   const [loading, setLoading] = useState(false)
-
   const [zdjecie, setZdjecie] = useState(null)
   const [powrotZM, setPowrotZM] = useState(false)
 
-  const wodowskaz = wodowskazy.find(w => String(w.id) === String(id))
+  const wodowskaz = wodowskazy.find((w) => String(w.id) === String(id))
 
   useEffect(() => {
-
     const restoreForm = () => {
       const saved = sessionStorage.getItem("pomiarForm")
       if (!saved) return
@@ -42,10 +39,9 @@ function DodajPomiar() {
         setGps(parsed.gps)
         setPowrotZM(true)
 
-        //reset flag
         parsed.fromMap = false
         sessionStorage.setItem("pomiarForm", JSON.stringify(parsed))
-      } 
+      }
     }
 
     restoreForm()
@@ -54,19 +50,16 @@ function DodajPomiar() {
     return () => {
       window.removeEventListener("focus", restoreForm)
     }
-
   }, [])
 
   const pobierzGPS = () => {
-
     if (!navigator.geolocation) {
-      addToast("GPS niedostępny", "error")
+      addToast("GPS niedostepny", "error")
       return
     }
 
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-
         const position = {
           lat: pos.coords.latitude,
           lng: pos.coords.longitude
@@ -80,14 +73,13 @@ function DodajPomiar() {
         parsed.gps = position
         sessionStorage.setItem("pomiarForm", JSON.stringify(parsed))
 
-        addToast("Pobrano lokalizację", "success")
+        addToast("Pobrano lokalizacje", "success")
       },
-      () => addToast("Nie udało się pobrać GPS", "error")
+      () => addToast("Nie udalo sie pobrac GPS", "error")
     )
   }
 
   const openMap = () => {
-
     const formState = {
       poziom,
       komentarz,
@@ -97,38 +89,43 @@ function DodajPomiar() {
     }
 
     sessionStorage.setItem("pomiarForm", JSON.stringify(formState))
-
     navigate("/mapa-wybor-lokalizacji")
   }
 
   const handleSubmit = async () => {
-
     if (!poziom) {
       addToast("Podaj poziom wody", "error")
+      return
+    }
+
+    if (!zdjecie) {
+      addToast("Dodanie pomiaru bez zdjecia nie jest mozliwe", "error")
+      return
+    }
+
+    if (!gps) {
+      addToast("Wskazanie lokalizacji jest wymagane", "error")
+      return
+    }
+
+    if (!wodowskaz) {
+      addToast("Nie znaleziono wodowskazu", "error")
       return
     }
 
     setLoading(true)
 
     try {
-
       const token = localStorage.getItem("token")
-
       const formData = new FormData()
 
       formData.append("wodowskazId", wodowskaz.id)
       formData.append("wartosc", poziom)
       formData.append("data", data)
       formData.append("komentarz", komentarz)
-
-      if (gps) {
-        formData.append("lat", gps.lat)
-        formData.append("lng", gps.lng)
-      }
-
-      if (zdjecie) {
-        formData.append("zdjecie", zdjecie)
-      }
+      formData.append("lat", gps.lat)
+      formData.append("lng", gps.lng)
+      formData.append("zdjecie", zdjecie)
 
       const res = await fetch("http://localhost:4000/api/pomiary", {
         method: "POST",
@@ -138,32 +135,45 @@ function DodajPomiar() {
         body: formData
       })
 
-      if (!res.ok) throw new Error("Błąd zapisu")
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => null)
+        throw new Error(errorData?.error || "Blad zapisu")
+      }
 
       sessionStorage.removeItem("pomiarForm")
-
       addToast("Pomiar zapisany", "success")
-
       navigate(`/wodowskazy/${wodowskaz.id}`)
-
     } catch (e) {
-      addToast(e.message || "Błąd", "error")
+      addToast(e.message || "Blad", "error")
+    } finally {
+      setLoading(false)
     }
+  }
 
-    setLoading(false)
+  if (loadingWodowskazy) {
+    return (
+      <Layout>
+        <div className="p-6">
+          <Card>
+            <div className="text-foreground dark:text-white">
+              Ladowanie wodowskazow...
+            </div>
+          </Card>
+        </div>
+      </Layout>
+    )
   }
 
   if (!id) {
     return (
       <Layout>
         <div className="p-6 space-y-6">
-
           <h1 className="text-xl font-bold text-foreground dark:text-white">
             Wybierz wodowskaz
           </h1>
 
           <div className="space-y-4">
-            {wodowskazy.map(w => (
+            {wodowskazy.map((w) => (
               <Card key={w.id}>
                 <div className="flex justify-between items-center">
                   <div>
@@ -188,7 +198,7 @@ function DodajPomiar() {
 
           {powrotZM && !zdjecie && (
             <div className="text-xs text-yellow-400">
-              Po powrocie z mapy wybierz zdjęcie ponownie
+              Po powrocie z mapy wybierz zdjecie ponownie
             </div>
           )}
 
@@ -196,9 +206,8 @@ function DodajPomiar() {
             variant="secondary"
             onClick={() => navigate("/wodowskazy")}
           >
-            Powrót
+            Powrot
           </Button>
-
         </div>
       </Layout>
     )
@@ -208,8 +217,7 @@ function DodajPomiar() {
     return (
       <Layout>
         <div className="p-6">
-
-          <h1 className="text-xl font-bold mb-6 dark:text-white">Błąd</h1>
+          <h1 className="text-xl font-bold mb-6 dark:text-white">Blad</h1>
 
           <Card>
             <div className="text-red-400">
@@ -222,10 +230,9 @@ function DodajPomiar() {
               variant="secondary"
               onClick={() => navigate("/wodowskazy")}
             >
-              Powrót
+              Powrot
             </Button>
           </div>
-
         </div>
       </Layout>
     )
@@ -233,17 +240,13 @@ function DodajPomiar() {
 
   return (
     <Layout>
-
       <div className="p-6 space-y-6">
-
         <h1 className="text-xl font-bold text-foreground dark:text-white">
           Wodowskaz: {wodowskaz.nazwa}
         </h1>
 
         <Card>
-
           <div className="space-y-5">
-
             <h2 className="font-semibold dark:text-white">Dodaj pomiar</h2>
 
             <FloatingInput
@@ -272,66 +275,57 @@ function DodajPomiar() {
             />
 
             <div className="space-y-2">
-
               <label className="text-sm opacity-80 dark:text-gray-300">
-                Zdjęcie pomiaru
+                Zdjecie pomiaru
               </label>
 
               <div className="flex items-center gap-3">
-
                 <label className="cursor-pointer">
-
                   <input
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={(e) => setZdjecie(e.target.files[0])}
+                    onChange={(e) => setZdjecie(e.target.files?.[0] || null)}
                   />
 
                   <span className="px-4 py-2 rounded-lg bg-primary text-white hover:opacity-90 transition">
-                    Wybierz zdjęcie
+                    Wybierz zdjecie
                   </span>
-
                 </label>
 
                 <span className="text-sm opacity-70 dark:text-gray-300">
                   {zdjecie ? zdjecie.name : "Nie wybrano pliku"}
                 </span>
-
               </div>
-
             </div>
 
             <Button variant="secondary" onClick={pobierzGPS}>
-              Pobierz lokalizację GPS
+              Pobierz lokalizacje GPS
             </Button>
 
             {gps && (
               <div className="text-sm text-green-400">
-                ✔ Lokalizacja zapisana: {gps.lat.toFixed(5)}, {gps.lng.toFixed(5)}
+                Lokalizacja zapisana: {gps.lat.toFixed(5)}, {gps.lng.toFixed(5)}
               </div>
             )}
 
             <Button variant="secondary" onClick={openMap}>
-              Wskaż lokalizację na mapie
+              Wskaz lokalizacje na mapie
             </Button>
 
             <Button variant="primary" onClick={handleSubmit} disabled={loading}>
               {loading ? "Zapisywanie..." : "Dodaj pomiar"}
             </Button>
-
           </div>
-
         </Card>
 
         <div className="flex flex-col gap-4 pt-4">
-
           <Button
             variant="secondary"
             onClick={() => navigate("/wodowskazy")}
             className="w-full py-3 text-base"
           >
-            Menu wodowskazów
+            Menu wodowskazow
           </Button>
 
           <Button
@@ -339,13 +333,10 @@ function DodajPomiar() {
             onClick={() => navigate("/wodowskazy/mapa")}
             className="w-full py-3 text-base"
           >
-            Mapa wodowskazów
+            Mapa wodowskazow
           </Button>
-
         </div>
-
       </div>
-
     </Layout>
   )
 }

@@ -108,30 +108,38 @@ app.get('/api/pomiary', async (req, res) => {
 })
 
 app.post('/api/pomiary', auth, upload.single('zdjecie'), async (req, res) => {
-
   const { wodowskazId, wartosc, data, komentarz, lat, lng } = req.body
 
-  try {
+  if (!req.file) {
+    return res.status(400).json({ error: 'zdjecie jest wymagane' })
+  }
 
+  if (!wodowskazId || !wartosc) {
+    return res.status(400).json({ error: 'brakuje wymaganych danych' })
+  }
+
+  if (!lat || !lng) {
+    return res.status(400).json({ error: 'lokalizacja jest wymagana' })
+  }
+
+  try {
     const pomiar = await prisma.pomiar.create({
       data: {
         wodowskazId: Number(wodowskazId),
         wartosc: Number(wartosc),
         data: data ? new Date(data) : undefined,
         komentarz: komentarz || null,
-        lat: lat ? Number(lat) : null,
-        lng: lng ? Number(lng) : null,
-        zdjecie: req.file ? req.file.filename : null
+        lat: Number(lat),
+        lng: Number(lng),
+        zdjecie: req.file.filename
       }
     })
 
     res.json(pomiar)
-
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'blad zapisu pomiaru' })
   }
-
 })
 
 app.delete('/api/pomiary/:id', auth, async (req, res) => {

@@ -17,10 +17,12 @@ function Register() {
 
   const { addToast } = useToast()
 
-  const handleRegister = async () => {
+  const handleRegister = async (e) => {
+    e.preventDefault()
+
     const newErrors = {}
 
-    if (!imie.trim()) newErrors.imie = "Podaj imię"
+    if (!imie.trim()) newErrors.imie = "Podaj imie"
 
     if (!email.trim()) {
       newErrors.email = "Podaj email"
@@ -32,25 +34,25 @@ function Register() {
     }
 
     if (!haslo.trim()) {
-      newErrors.haslo = "Podaj hasło"
+      newErrors.haslo = "Podaj haslo"
     } else if (haslo.length < 6) {
-      newErrors.haslo = "Hasło musi mieć min. 6 znaków"
+      newErrors.haslo = "Haslo musi miec min. 6 znakow"
     }
 
     setErrors(newErrors)
 
     if (Object.keys(newErrors).length > 0) {
-      addToast("Popraw błędy w formularzu", "error")
+      addToast("Popraw bledy w formularzu", "error")
       return
     }
 
     setLoading(true)
     try {
       await register(imie, email, haslo)
-      addToast("Rejestracja zakończona sukcesem", "success")
+      addToast("Rejestracja zakonczona sukcesem", "success")
       navigate("/")
     } catch (e) {
-      addToast(e.message || "Błąd rejestracji", "error")
+      addToast(e.message || "Blad rejestracji", "error")
     }
     setLoading(false)
   }
@@ -64,22 +66,19 @@ function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background dark:bg-darkbg transition-colors duration-300">
-      
       <div className="bg-surface dark:bg-darksurface p-10 rounded-2xl shadow-card border border-border dark:border-darkborder w-full max-w-md">
-        
         <h2 className="text-2xl font-bold text-center mb-8 text-foreground dark:text-[#B9D6F2]">
           Rejestracja
         </h2>
 
-        <div className="space-y-5">
-
+        <form onSubmit={handleRegister} className="space-y-5">
           <div>
             <FloatingInput
-              label="Imię"
+              label="Imie"
               value={imie}
               onChange={(e) => {
                 setImie(e.target.value)
-                setErrors(prev => ({ ...prev, imie: null }))
+                setErrors((prev) => ({ ...prev, imie: null }))
               }}
               className={inputClass(errors.imie)}
             />
@@ -95,7 +94,7 @@ function Register() {
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value)
-                setErrors(prev => ({ ...prev, email: null }))
+                setErrors((prev) => ({ ...prev, email: null }))
               }}
               className={inputClass(errors.email)}
             />
@@ -107,11 +106,11 @@ function Register() {
           <div>
             <FloatingInput
               type="password"
-              label="Hasło"
+              label="Haslo"
               value={haslo}
               onChange={(e) => {
                 setHaslo(e.target.value)
-                setErrors(prev => ({ ...prev, haslo: null }))
+                setErrors((prev) => ({ ...prev, haslo: null }))
               }}
               className={inputClass(errors.haslo)}
             />
@@ -121,10 +120,9 @@ function Register() {
           </div>
 
           <div className="space-y-3 pt-2">
-
             <Button
               variant="primary"
-              onClick={handleRegister}
+              type="submit"
               disabled={loading}
               className="w-full py-3"
             >
@@ -133,15 +131,14 @@ function Register() {
 
             <Button
               variant="secondary"
+              type="button"
               onClick={() => navigate("/")}
               className="w-full py-3"
             >
-              Powrót
+              Powrot
             </Button>
-
           </div>
-
-        </div>
+        </form>
       </div>
     </div>
   )

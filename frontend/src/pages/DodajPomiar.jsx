@@ -11,7 +11,7 @@ function DodajPomiar() {
   const { id } = useParams()
   const navigate = useNavigate()
 
-  const { wodowskazy, loading: loadingWodowskazy } = useWodowskazy()
+  const { wodowskazy, loading: loadingWodowskazy, pobierzWodowskazy } = useWodowskazy()
   const { addToast } = useToast()
 
   const [poziom, setPoziom] = useState("")
@@ -141,6 +141,7 @@ function DodajPomiar() {
       }
 
       sessionStorage.removeItem("pomiarForm")
+      await pobierzWodowskazy()
       addToast("Pomiar zapisany", "success")
       navigate(`/wodowskazy/${wodowskaz.id}`)
     } catch (e) {

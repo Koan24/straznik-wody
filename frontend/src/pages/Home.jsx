@@ -47,31 +47,40 @@ function Home() {
 
   const ostatnieZgloszenie =
     zgloszenia.length > 0
-      ? zgloszenia[zgloszenia.length - 1]
+      ? [...zgloszenia].sort((a, b) => {
+          const da = a.createdAt ? new Date(a.createdAt).getTime() : 0
+          const db = b.createdAt ? new Date(b.createdAt).getTime() : 0
+          return db - da
+        })[0]
       : null
 
-  const wszystkiePomiary = wodowskazy.flatMap(w => w.pomiary || [])
+  const wszystkiePomiary = wodowskazy.flatMap((w) =>
+    (w.pomiary || []).map((p) => ({
+      ...p,
+      wodowskazId: p.wodowskazId ?? w.id
+    }))
+  )
 
   const ostatniPomiar =
     wszystkiePomiary.length > 0
-      ? wszystkiePomiary[wszystkiePomiary.length - 1]
+      ? [...wszystkiePomiary].sort((a, b) => {
+          const da = a.data ? new Date(a.data).getTime() : 0
+          const db = b.data ? new Date(b.data).getTime() : 0
+          return db - da
+        })[0]
       : null
 
   const wodowskazDoPomiaru = ostatniPomiar
-    ? wodowskazy.find(w => w.id === ostatniPomiar.wodowskazId)
+    ? wodowskazy.find((w) => w.id === ostatniPomiar.wodowskazId)
     : null
 
   return (
     <Layout title="Panel systemu">
-
       <div className="space-y-6">
-
-        {/* statystyki */}
         <div className="grid grid-cols-2 gap-4">
-
           <Card>
             <div className="text-xs text-gray-500 mb-1">
-              Zgłoszenia
+              Zgloszenia
             </div>
             <AnimatedNumber value={zgloszenia.length} />
           </Card>
@@ -82,15 +91,12 @@ function Home() {
             </div>
             <AnimatedNumber value={wodowskazy.length} />
           </Card>
-
         </div>
 
-        {/* ostatnie zgłoszenie */}
         <Card>
           <div className="space-y-2">
-
             <div className="font-semibold text-lg text-gray-900 dark:text-gray-100">
-              Ostatnie zgłoszenie
+              Ostatnie zgloszenie
             </div>
 
             {ostatnieZgloszenie ? (
@@ -105,17 +111,14 @@ function Home() {
               </>
             ) : (
               <div className="text-gray-500 text-sm">
-                Brak zgłoszeń
+                Brak zgloszen
               </div>
             )}
-
           </div>
         </Card>
 
-        {/* ostatni pomiar */}
         <Card>
           <div className="space-y-2">
-
             <div className="font-semibold text-lg text-gray-900 dark:text-gray-100">
               Ostatni pomiar wodowskazu
             </div>
@@ -143,23 +146,19 @@ function Home() {
                 Brak danych
               </div>
             )}
-
           </div>
         </Card>
 
-        {/* mapa */}
         <Card>
-
           <div className="space-y-3">
-
             <div className="font-semibold text-lg text-gray-900 dark:text-gray-100">
-              Podgląd systemu
+              Podglad systemu
             </div>
 
             <div className="text-sm flex gap-4 text-gray-600 dark:text-gray-400">
               <div className="flex items-center gap-1">
                 <span>🔴</span>
-                <span>zgłoszenia</span>
+                <span>zgloszenia</span>
               </div>
 
               <div className="flex items-center gap-1">
@@ -169,34 +168,34 @@ function Home() {
             </div>
 
             <div className="rounded-xl overflow-hidden border border-border dark:border-darkborder">
-
               <MapContainer
                 center={[51.1079, 17.0385]}
-                zoom={12}
+                zoom={11}
                 className="h-[260px] w-full"
               >
-
                 <TileLayer
                   attribution="© OpenStreetMap"
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
 
-                {wodowskazy.map((w) => (
-                  <Marker
-                    key={"w"+w.id}
-                    position={[w.lat, w.lng]}
-                    icon={wodowskazIcon}
-                  >
-                    <Popup>
-                      Wodowskaz: {w.nazwa}
-                    </Popup>
-                  </Marker>
-                ))}
+                {wodowskazy.map((w) =>
+                  w.lat && w.lng ? (
+                    <Marker
+                      key={"w" + w.id}
+                      position={[w.lat, w.lng]}
+                      icon={wodowskazIcon}
+                    >
+                      <Popup>
+                        Wodowskaz: {w.nazwa}
+                      </Popup>
+                    </Marker>
+                  ) : null
+                )}
 
                 {zgloszenia.map((z) =>
                   z.lat && z.lng ? (
                     <Marker
-                      key={"z"+z.id}
+                      key={"z" + z.id}
                       position={[z.lat, z.lng]}
                       icon={zgloszenieIcon}
                     >
@@ -206,17 +205,11 @@ function Home() {
                     </Marker>
                   ) : null
                 )}
-
               </MapContainer>
-
             </div>
-
           </div>
-
         </Card>
-
       </div>
-
     </Layout>
   )
 }

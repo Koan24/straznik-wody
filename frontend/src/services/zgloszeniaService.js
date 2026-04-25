@@ -13,10 +13,18 @@ export async function getZgloszenia() {
 export async function createZgloszenie(data) {
   const res = await fetch(`${API_URL}/api/zgloszenia`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", ...getAuthHeader() },
-    body: JSON.stringify(data)
+    headers: {
+      ...getAuthHeader()
+    },
+    body: data
   })
-  return res.ok ? res.json() : null
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => null)
+    throw new Error(errorData?.error || "Nie udalo sie dodac zgloszenia")
+  }
+
+  return res.json()
 }
 
 export async function updateZgloszenie(id, data) {
@@ -25,7 +33,13 @@ export async function updateZgloszenie(id, data) {
     headers: { "Content-Type": "application/json", ...getAuthHeader() },
     body: JSON.stringify(data)
   })
-  return res.ok ? res.json() : null
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => null)
+    throw new Error(errorData?.error || "Nie udalo sie zaktualizowac zgloszenia")
+  }
+
+  return res.json()
 }
 
 export async function deleteZgloszenie(id) {
@@ -33,5 +47,6 @@ export async function deleteZgloszenie(id) {
     method: "DELETE",
     headers: getAuthHeader()
   })
+
   return res.ok
 }

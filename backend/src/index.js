@@ -270,7 +270,7 @@ app.get('/api/zgloszenia', async (req, res) => {
   }
 })
 
-app.post('/api/zgloszenia', async (req, res) => {
+app.post('/api/zgloszenia', upload.single('zdjecie'), async (req, res) => {
   try {
     const {
       tytul,
@@ -282,6 +282,18 @@ app.post('/api/zgloszenia', async (req, res) => {
       lng
     } = req.body
 
+    if (!req.file) {
+      return res.status(400).json({ error: 'zdjecie jest wymagane' })
+    }
+
+    if (!tytul || !opis || !typObiektu || !rodzajUszkodzenia || !stopien) {
+      return res.status(400).json({ error: 'brakuje wymaganych danych' })
+    }
+
+    if (!lat || !lng) {
+      return res.status(400).json({ error: 'lokalizacja jest wymagana' })
+    }
+
     const item = await prisma.zgloszenie.create({
       data: {
         tytul,
@@ -289,8 +301,9 @@ app.post('/api/zgloszenia', async (req, res) => {
         typObiektu,
         rodzajUszkodzenia,
         stopien: Number(stopien),
-        lat,
-        lng
+        lat: Number(lat),
+        lng: Number(lng),
+        zdjecie: req.file.filename
       }
     })
 

@@ -68,6 +68,7 @@ model Zgloszenie {
   lat               Float?
   lng               Float?
   status            String   @default("open")
+  zdjecie           String?
   userId            Int?
   user              User?    @relation(fields: [userId], references: [id])
   createdAt         DateTime @default(now())

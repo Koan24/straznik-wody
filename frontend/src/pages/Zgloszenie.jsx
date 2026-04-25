@@ -13,8 +13,9 @@ function ClickHandler({ setLat, setLng }) {
     click(e) {
       setLat(e.latlng.lat)
       setLng(e.latlng.lng)
-    },
+    }
   })
+
   return null
 }
 
@@ -30,6 +31,8 @@ function Zgloszenie() {
   const [typObiektu, setTypObiektu] = useState("")
   const [rodzajUszkodzenia, setRodzajUszkodzenia] = useState("")
   const [stopien, setStopien] = useState("")
+  const [zdjecie, setZdjecie] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   const handleGetLocation = () => {
     if (!navigator.geolocation) {
@@ -39,21 +42,21 @@ function Zgloszenie() {
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        const lat = position.coords.latitude
-        const lng = position.coords.longitude
+        const newLat = position.coords.latitude
+        const newLng = position.coords.longitude
 
-        setLat(lat)
-        setLng(lng)
+        setLat(newLat)
+        setLng(newLng)
 
-        addToast("Pobrano lokalizację", "success")
+        addToast("Pobrano lokalizacje", "success")
       },
       () => {
-        addToast("Nie udało się pobrać lokalizacji", "error")
+        addToast("Nie udalo sie pobrac lokalizacji", "error")
       }
     )
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (
       !tytul ||
       !opis ||
@@ -63,23 +66,38 @@ function Zgloszenie() {
       lat === null ||
       lng === null
     ) {
-      addToast("Wypełnij wszystkie pola i kliknij lokalizację na mapie", "error")
+      addToast("Wypelnij wszystkie pola i wybierz lokalizacje", "error")
       return
     }
 
-    dodajZgloszenie({
-      tytul,
-      opis,
-      typObiektu,
-      rodzajUszkodzenia,
-      stopien: Number(stopien),
-      lat,
-      lng,
-      data: new Date().toISOString()
-    })
+    if (!zdjecie) {
+      addToast("Dodanie zgloszenia bez zdjecia nie jest mozliwe", "error")
+      return
+    }
 
-    addToast("Pomiar dodany poprawnie", "success")
-    navigate("/obiekty/lista")
+    setLoading(true)
+
+    try {
+      const formData = new FormData()
+
+      formData.append("tytul", tytul)
+      formData.append("opis", opis)
+      formData.append("typObiektu", typObiektu)
+      formData.append("rodzajUszkodzenia", rodzajUszkodzenia)
+      formData.append("stopien", stopien)
+      formData.append("lat", lat)
+      formData.append("lng", lng)
+      formData.append("zdjecie", zdjecie)
+
+      await dodajZgloszenie(formData)
+
+      addToast("Zgloszenie dodane poprawnie", "success")
+      navigate("/obiekty/lista")
+    } catch (e) {
+      addToast(e.message || "Nie udalo sie dodac zgloszenia", "error")
+    } finally {
+      setLoading(false)
+    }
   }
 
   const inputClass = `
@@ -92,12 +110,11 @@ function Zgloszenie() {
   `
 
   return (
-    <Layout title="Zgłoszenie usterki">
+    <Layout title="Zgloszenie usterki">
       <Card>
         <div className="space-y-6">
-
           <FloatingInput
-            label="Tytuł"
+            label="Tytul"
             value={tytul}
             onChange={(e) => setTytul(e.target.value)}
             className={inputClass}
@@ -111,7 +128,7 @@ function Zgloszenie() {
             <option value="">Typ obiektu</option>
             <option value="most">Most</option>
             <option value="jaz">Jaz</option>
-            <option value="wal">Wał przeciwpowodziowy</option>
+            <option value="wal">Wal przeciwpowodziowy</option>
             <option value="przepompownia">Przepompownia</option>
           </select>
 
@@ -121,7 +138,7 @@ function Zgloszenie() {
             className={inputClass}
           >
             <option value="">Rodzaj uszkodzenia</option>
-            <option value="pekniecie">Pęknięcie</option>
+            <option value="pekniecie">Pekniecie</option>
             <option value="korozja">Korozja</option>
             <option value="zalanie">Zalanie</option>
             <option value="mechaniczne">Uszkodzenia mechaniczne</option>
@@ -132,10 +149,10 @@ function Zgloszenie() {
             onChange={(e) => setStopien(e.target.value)}
             className={inputClass}
           >
-            <option value="">Stopień zagrożenia</option>
+            <option value="">Stopien zagrozenia</option>
             <option value="1">1 - Niski</option>
             <option value="2">2</option>
-            <option value="3">3 - Średni</option>
+            <option value="3">3 - Sredni</option>
             <option value="4">4</option>
             <option value="5">5 - Krytyczny</option>
           </select>
@@ -148,15 +165,40 @@ function Zgloszenie() {
             className={inputClass}
           />
 
+          <div className="space-y-2">
+            <label className="text-sm opacity-80 dark:text-gray-300">
+              Zdjecie zgloszenia
+            </label>
+
+            <div className="flex items-center gap-3">
+              <label className="cursor-pointer">
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => setZdjecie(e.target.files?.[0] || null)}
+                />
+
+                <span className="px-4 py-2 rounded-lg bg-primary text-white hover:opacity-90 transition">
+                  Wybierz zdjecie
+                </span>
+              </label>
+
+              <span className="text-sm opacity-70 dark:text-gray-300">
+                {zdjecie ? zdjecie.name : "Nie wybrano pliku"}
+              </span>
+            </div>
+          </div>
+
           <Button
             onClick={handleGetLocation}
             className="mb-3 px-4 py-2 bg-primary text-white rounded-lg"
           >
-            Pobierz moją lokalizację
+            Pobierz moja lokalizacje
           </Button>
 
           <div className="text-sm text-gray-600 dark:text-[#93C1DD]">
-            Wybierz lokalizację na mapie:
+            Wybierz lokalizacje na mapie:
           </div>
 
           <div className="relative rounded-xl overflow-hidden border border-border dark:border-darkborder mb-40">
@@ -170,30 +212,31 @@ function Zgloszenie() {
                 attribution="© OpenStreetMap"
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
+
               <ClickHandler setLat={setLat} setLng={setLng} />
+
               {lat && lng && <Marker position={[lat, lng]} />}
             </MapContainer>
           </div>
 
           {lat && lng && (
             <div className="text-sm text-gray-600 dark:text-[#93C1DD]">
-              Wybrane współrzędne: {lat.toFixed(5)}, {lng.toFixed(5)}
+              Wybrane wspolrzedne: {lat.toFixed(5)}, {lng.toFixed(5)}
             </div>
           )}
 
           <div className="flex gap-4 pt-2">
-            <Button variant="primary" onClick={handleSubmit}>
-              Wyślij zgłoszenie
+            <Button variant="primary" onClick={handleSubmit} disabled={loading}>
+              {loading ? "Wysylanie..." : "Wyslij zgloszenie"}
             </Button>
 
             <Button
               variant="secondary"
               onClick={() => navigate("/obiekty")}
             >
-              Powrót
+              Powrot
             </Button>
           </div>
-
         </div>
       </Card>
     </Layout>

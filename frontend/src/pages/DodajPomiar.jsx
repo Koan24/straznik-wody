@@ -7,15 +7,48 @@ import FloatingInput from "../components/FloatingInput"
 import { useWodowskazy } from "../context/WodowskazyContext"
 import { useToast } from "../context/ToastContext"
 
+function SelectField({ label, value, onChange, options }) {
+  return (
+    <div>
+      <label className="text-sm opacity-80 dark:text-gray-300">
+        {label}
+      </label>
+
+      <select
+        value={value}
+        onChange={onChange}
+        className="w-full mt-1 px-4 py-3 rounded-lg bg-surface dark:bg-darkbg text-foreground dark:text-white border border-border dark:border-darkborder focus:outline-none focus:ring-2 focus:ring-primary"
+      >
+        <option value="">Wybierz</option>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  )
+}
+
 function DodajPomiar() {
   const { id } = useParams()
   const navigate = useNavigate()
 
-  const { wodowskazy, loading: loadingWodowskazy, pobierzWodowskazy } = useWodowskazy()
+  const {
+    wodowskazy,
+    loading: loadingWodowskazy,
+    pobierzWodowskazy
+  } = useWodowskazy()
+
   const { addToast } = useToast()
 
   const [poziom, setPoziom] = useState("")
   const [komentarz, setKomentarz] = useState("")
+  const [dostepDoPunktu, setDostepDoPunktu] = useState("")
+  const [mozliwoscOdczytu, setMozliwoscOdczytu] = useState("")
+  const [stanLaty, setStanLaty] = useState("")
+  const [warunkiOdczytu, setWarunkiOdczytu] = useState("")
+  const [uwagiTerenowe, setUwagiTerenowe] = useState("")
   const [data, setData] = useState(new Date().toISOString().slice(0, 16))
   const [gps, setGps] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -33,6 +66,11 @@ function DodajPomiar() {
 
       if (parsed.poziom !== undefined) setPoziom(parsed.poziom)
       if (parsed.komentarz !== undefined) setKomentarz(parsed.komentarz)
+      if (parsed.dostepDoPunktu !== undefined) setDostepDoPunktu(parsed.dostepDoPunktu)
+      if (parsed.mozliwoscOdczytu !== undefined) setMozliwoscOdczytu(parsed.mozliwoscOdczytu)
+      if (parsed.stanLaty !== undefined) setStanLaty(parsed.stanLaty)
+      if (parsed.warunkiOdczytu !== undefined) setWarunkiOdczytu(parsed.warunkiOdczytu)
+      if (parsed.uwagiTerenowe !== undefined) setUwagiTerenowe(parsed.uwagiTerenowe)
       if (parsed.data !== undefined) setData(parsed.data)
 
       if (parsed.gps !== undefined && parsed.fromMap) {
@@ -83,6 +121,11 @@ function DodajPomiar() {
     const formState = {
       poziom,
       komentarz,
+      dostepDoPunktu,
+      mozliwoscOdczytu,
+      stanLaty,
+      warunkiOdczytu,
+      uwagiTerenowe,
       data,
       gps,
       fromMap: true
@@ -126,6 +169,12 @@ function DodajPomiar() {
       formData.append("lat", gps.lat)
       formData.append("lng", gps.lng)
       formData.append("zdjecie", zdjecie)
+
+      formData.append("dostepDoPunktu", dostepDoPunktu)
+      formData.append("mozliwoscOdczytu", mozliwoscOdczytu)
+      formData.append("stanLaty", stanLaty)
+      formData.append("warunkiOdczytu", warunkiOdczytu)
+      formData.append("uwagiTerenowe", uwagiTerenowe)
 
       const res = await fetch("http://localhost:4000/api/pomiary", {
         method: "POST",
@@ -196,12 +245,6 @@ function DodajPomiar() {
               </Card>
             ))}
           </div>
-
-          {powrotZM && !zdjecie && (
-            <div className="text-xs text-yellow-400">
-              Po powrocie z mapy wybierz zdjecie ponownie
-            </div>
-          )}
 
           <Button
             variant="secondary"
@@ -275,6 +318,60 @@ function DodajPomiar() {
               onChange={(e) => setKomentarz(e.target.value)}
             />
 
+            <SelectField
+              label="Dostep do punktu"
+              value={dostepDoPunktu}
+              onChange={(e) => setDostepDoPunktu(e.target.value)}
+              options={[
+                { value: "latwy", label: "Latwy" },
+                { value: "utrudniony", label: "Utrudniony" },
+                { value: "trudny", label: "Trudny" }
+              ]}
+            />
+
+            <SelectField
+              label="Mozliwosc odczytu"
+              value={mozliwoscOdczytu}
+              onChange={(e) => setMozliwoscOdczytu(e.target.value)}
+              options={[
+                { value: "bez_problemu", label: "Bez problemu" },
+                { value: "czesciowo_utrudniona", label: "Czesciowo utrudniona" },
+                { value: "niemozliwa", label: "Niemozliwa" }
+              ]}
+            />
+
+            <SelectField
+              label="Stan laty"
+              value={stanLaty}
+              onChange={(e) => setStanLaty(e.target.value)}
+              options={[
+                { value: "dobry", label: "Dobry" },
+                { value: "zabrudzona", label: "Zabrudzona" },
+                { value: "uszkodzona", label: "Uszkodzona" },
+                { value: "przesunieta", label: "Przesunieta" },
+                { value: "niewidoczna", label: "Niewidoczna" }
+              ]}
+            />
+
+            <SelectField
+              label="Warunki odczytu"
+              value={warunkiOdczytu}
+              onChange={(e) => setWarunkiOdczytu(e.target.value)}
+              options={[
+                { value: "dobre", label: "Dobre" },
+                { value: "slabe_swiatlo", label: "Slabe swiatlo" },
+                { value: "deszcz", label: "Deszcz" },
+                { value: "roslinnosc", label: "Wysoka roslinnosc" },
+                { value: "inne", label: "Inne" }
+              ]}
+            />
+
+            <FloatingInput
+              label="Uwagi terenowe"
+              value={uwagiTerenowe}
+              onChange={(e) => setUwagiTerenowe(e.target.value)}
+            />
+
             <div className="space-y-2">
               <label className="text-sm opacity-80 dark:text-gray-300">
                 Zdjecie pomiaru
@@ -299,6 +396,12 @@ function DodajPomiar() {
                 </span>
               </div>
             </div>
+
+            {powrotZM && !zdjecie && (
+              <div className="text-xs text-yellow-400">
+                Po powrocie z mapy wybierz zdjecie ponownie
+              </div>
+            )}
 
             <Button variant="secondary" onClick={pobierzGPS}>
               Pobierz lokalizacje GPS

@@ -13,10 +13,18 @@ export async function getWodowskazy() {
 export async function createWodowskaz(data) {
   const res = await fetch(`${API_URL}/api/wodowskazy`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", ...getAuthHeader() },
-    body: JSON.stringify(data)
+    headers: {
+      ...getAuthHeader()
+    },
+    body: data
   })
-  return res.ok ? res.json() : null
+
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => null)
+    throw new Error(errorData?.error || "Nie udalo sie dodac wodowskazu")
+  }
+
+  return res.json()
 }
 
 export async function updateWodowskaz(id, data) {

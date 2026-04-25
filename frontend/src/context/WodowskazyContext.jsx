@@ -23,12 +23,14 @@ export function WodowskazyProvider({ children }) {
     pobierzWodowskazy()
   }, [])
 
-  const dodajWodowskaz = async (nazwa, lat, lng) => {
-    const newWodowskaz = await createWodowskaz({ nazwa, lat, lng })
+  const dodajWodowskaz = async (formData) => {
+    const newWodowskaz = await createWodowskaz(formData)
+
     if (newWodowskaz) {
       await pobierzWodowskazy()
       return newWodowskaz
     }
+
     return null
   }
 

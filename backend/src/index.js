@@ -79,10 +79,48 @@ app.get('/api/wodowskazy', async (req, res) => {
   res.json(items)
 })
 
-app.post('/api/wodowskazy', auth, async (req, res) => {
-  const data = req.body
-  const item = await prisma.wodowskaz.create({ data })
-  res.json(item)
+app.post('/api/wodowskazy', auth, upload.single('zdjecieReferencyjne'), async (req, res) => {
+  try {
+    const {
+      nazwa,
+      lat,
+      lng,
+      numerId,
+      typPunktu,
+      stanTechniczny,
+      dostepnosc,
+      ciekLubZbiornik,
+      dataInstalacji,
+      rzednaZero,
+      opis
+    } = req.body
+
+    if (!nazwa || !lat || !lng) {
+      return res.status(400).json({ error: 'brakuje wymaganych danych' })
+    }
+
+    const item = await prisma.wodowskaz.create({
+      data: {
+        nazwa,
+        lat: Number(lat),
+        lng: Number(lng),
+        numerId: numerId || null,
+        typPunktu: typPunktu || null,
+        stanTechniczny: stanTechniczny || null,
+        dostepnosc: dostepnosc || null,
+        ciekLubZbiornik: ciekLubZbiornik || null,
+        dataInstalacji: dataInstalacji ? new Date(dataInstalacji) : null,
+        rzednaZero: rzednaZero ? Number(rzednaZero) : null,
+        opis: opis || null,
+        zdjecieReferencyjne: req.file ? req.file.filename : null
+      }
+    })
+
+    res.json(item)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'blad zapisu wodowskazu' })
+  }
 })
 
 app.put('/api/wodowskazy/:id', auth, async (req, res) => {
@@ -98,6 +136,31 @@ app.delete('/api/wodowskazy/:id', auth, async (req, res) => {
   res.json({ ok: true })
 })
 
+function calculateDistanceMeters(lat1, lng1, lat2, lng2) {
+  const R = 6371000
+  const toRad = (value) => (value * Math.PI) / 180
+
+  const dLat = toRad(lat2 - lat1)
+  const dLng = toRad(lng2 - lng1)
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2)
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+  return R * c
+}
+
+function getLocationQuality(distanceMeters) {
+  if (distanceMeters <= 5) return 'wysoka'
+  if (distanceMeters <= 20) return 'srednia'
+  return 'niska'
+}
+
 // --- Pomiary ---
 app.get('/api/pomiary', async (req, res) => {
   const pomiary = await prisma.pomiar.findMany({
@@ -108,7 +171,19 @@ app.get('/api/pomiary', async (req, res) => {
 })
 
 app.post('/api/pomiary', auth, upload.single('zdjecie'), async (req, res) => {
-  const { wodowskazId, wartosc, data, komentarz, lat, lng } = req.body
+  const {
+    wodowskazId,
+    wartosc,
+    data,
+    komentarz,
+    lat,
+    lng,
+    dostepDoPunktu,
+    mozliwoscOdczytu,
+    stanLaty,
+    warunkiOdczytu,
+    uwagiTerenowe
+  } = req.body
 
   if (!req.file) {
     return res.status(400).json({ error: 'zdjecie jest wymagane' })
@@ -123,6 +198,27 @@ app.post('/api/pomiary', auth, upload.single('zdjecie'), async (req, res) => {
   }
 
   try {
+    const wodowskaz = await prisma.wodowskaz.findUnique({
+      where: { id: Number(wodowskazId) }
+    })
+
+    if (!wodowskaz) {
+      return res.status(404).json({ error: 'nie znaleziono wodowskazu' })
+    }
+
+    if (wodowskaz.lat === null || wodowskaz.lng === null) {
+      return res.status(400).json({ error: 'wodowskaz nie ma zapisanej lokalizacji' })
+    }
+
+    const dystansOdWodowskazu = calculateDistanceMeters(
+      Number(lat),
+      Number(lng),
+      Number(wodowskaz.lat),
+      Number(wodowskaz.lng)
+    )
+
+    const jakoscLokalizacji = getLocationQuality(dystansOdWodowskazu)
+
     const pomiar = await prisma.pomiar.create({
       data: {
         wodowskazId: Number(wodowskazId),
@@ -131,7 +227,18 @@ app.post('/api/pomiary', auth, upload.single('zdjecie'), async (req, res) => {
         komentarz: komentarz || null,
         lat: Number(lat),
         lng: Number(lng),
-        zdjecie: req.file.filename
+        zdjecie: req.file.filename,
+
+        dostepDoPunktu: dostepDoPunktu || null,
+        mozliwoscOdczytu: mozliwoscOdczytu || null,
+        stanLaty: stanLaty || null,
+        warunkiOdczytu: warunkiOdczytu || null,
+        uwagiTerenowe: uwagiTerenowe || null,
+
+        dystansOdWodowskazu,
+        jakoscLokalizacji,
+
+        userId: req.user?.sub ? Number(req.user.sub) : null
       }
     })
 

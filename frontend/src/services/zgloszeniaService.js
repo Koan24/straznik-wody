@@ -5,8 +5,24 @@ function getAuthHeader() {
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
-export async function getZgloszenia() {
-  const res = await fetch(`${API_URL}/api/zgloszenia`)
+export function getUploadUrl(fileName) {
+  if (!fileName) return null
+  return `${API_URL}/uploads/${fileName}`
+}
+
+export async function getZgloszenia(filters = {}) {
+  const params = new URLSearchParams()
+
+  if (filters.dataOd) params.append("dataOd", filters.dataOd)
+  if (filters.dataDo) params.append("dataDo", filters.dataDo)
+  if (filters.status) params.append("status", filters.status)
+
+  const query = params.toString()
+  const url = query
+    ? `${API_URL}/api/zgloszenia?${query}`
+    : `${API_URL}/api/zgloszenia`
+
+  const res = await fetch(url)
   return res.ok ? res.json() : []
 }
 

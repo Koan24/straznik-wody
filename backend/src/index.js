@@ -1,10 +1,11 @@
 require('dotenv').config()
+
 const express = require('express')
 const cors = require('cors')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const path = require('path')
 const { PrismaClient } = require('@prisma/client')
-
 const multer = require('multer')
 
 const upload = multer({
@@ -13,8 +14,10 @@ const upload = multer({
 
 const prisma = new PrismaClient()
 const app = express()
+
 app.use(cors())
 app.use(express.json())
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')))
 
 const PORT = process.env.PORT || 4000
 const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret'
@@ -259,14 +262,38 @@ app.delete('/api/pomiary/:id', auth, async (req, res) => {
 // --- Zgloszenia ---
 app.get('/api/zgloszenia', async (req, res) => {
   try {
+    const { dataOd, dataDo, status } = req.query
+
+    const where = {}
+
+    if (status) {
+      where.status = status
+    }
+
+    if (dataOd || dataDo) {
+      where.createdAt = {}
+
+      if (dataOd) {
+        where.createdAt.gte = new Date(dataOd)
+      }
+
+      if (dataDo) {
+        const endDate = new Date(dataDo)
+        endDate.setHours(23, 59, 59, 999)
+        where.createdAt.lte = endDate
+      }
+    }
+
     const zgloszenia = await prisma.zgloszenie.findMany({
-      include: { user: true },
-      orderBy: { createdAt: 'desc' }
+      where,
+      orderBy: {
+        createdAt: 'desc'
+      }
     })
+
     res.json(zgloszenia)
-  } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'could not fetch zgloszenia' })
+  } catch (error) {
+    res.status(500).json({ error: 'Blad pobierania zgloszen' })
   }
 })
 

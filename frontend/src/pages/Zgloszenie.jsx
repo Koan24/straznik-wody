@@ -48,10 +48,10 @@ function Zgloszenie() {
         setLat(newLat)
         setLng(newLng)
 
-        addToast("Pobrano lokalizacje", "success")
+        addToast("Pobrano lokalizację", "success")
       },
       () => {
-        addToast("Nie udalo sie pobrac lokalizacji", "error")
+        addToast("Nie udało się pobrać lokalizacji", "error")
       }
     )
   }
@@ -66,12 +66,12 @@ function Zgloszenie() {
       lat === null ||
       lng === null
     ) {
-      addToast("Wypelnij wszystkie pola i wybierz lokalizacje", "error")
+      addToast("Wypełnij wszystkie pola i wybierz lokalizację", "error")
       return
     }
 
     if (!zdjecie) {
-      addToast("Dodanie zgloszenia bez zdjecia nie jest mozliwe", "error")
+      addToast("Dodanie zgłoszenia bez zdjęcia nie jest możliwe", "error")
       return
     }
 
@@ -91,10 +91,10 @@ function Zgloszenie() {
 
       await dodajZgloszenie(formData)
 
-      addToast("Zgloszenie dodane poprawnie", "success")
+      addToast("Zgłoszenie dodane poprawnie", "success")
       navigate("/obiekty/lista")
     } catch (e) {
-      addToast(e.message || "Nie udalo sie dodac zgloszenia", "error")
+      addToast(e.message || "Nie udało się dodać zgłoszenia", "error")
     } finally {
       setLoading(false)
     }
@@ -110,11 +110,11 @@ function Zgloszenie() {
   `
 
   return (
-    <Layout title="Zgloszenie usterki">
+    <Layout title="Zgłoszenie usterki">
       <Card>
         <div className="space-y-6">
           <FloatingInput
-            label="Tytul"
+            label="Tytuł"
             value={tytul}
             onChange={(e) => setTytul(e.target.value)}
             className={inputClass}
@@ -128,7 +128,7 @@ function Zgloszenie() {
             <option value="">Typ obiektu</option>
             <option value="most">Most</option>
             <option value="jaz">Jaz</option>
-            <option value="wal">Wal przeciwpowodziowy</option>
+            <option value="wal">Wał przeciwpowodziowy</option>
             <option value="przepompownia">Przepompownia</option>
           </select>
 
@@ -138,7 +138,7 @@ function Zgloszenie() {
             className={inputClass}
           >
             <option value="">Rodzaj uszkodzenia</option>
-            <option value="pekniecie">Pekniecie</option>
+            <option value="pekniecie">Pękniecie</option>
             <option value="korozja">Korozja</option>
             <option value="zalanie">Zalanie</option>
             <option value="mechaniczne">Uszkodzenia mechaniczne</option>
@@ -149,10 +149,10 @@ function Zgloszenie() {
             onChange={(e) => setStopien(e.target.value)}
             className={inputClass}
           >
-            <option value="">Stopien zagrozenia</option>
+            <option value="">Stopień zagrożenia</option>
             <option value="1">1 - Niski</option>
             <option value="2">2</option>
-            <option value="3">3 - Sredni</option>
+            <option value="3">3 - Średni</option>
             <option value="4">4</option>
             <option value="5">5 - Krytyczny</option>
           </select>
@@ -167,7 +167,7 @@ function Zgloszenie() {
 
           <div className="space-y-2">
             <label className="text-sm opacity-80 dark:text-gray-300">
-              Zdjecie zgloszenia
+              Zdjęcie zgłoszenia
             </label>
 
             <div className="flex items-center gap-3">
@@ -180,7 +180,7 @@ function Zgloszenie() {
                 />
 
                 <span className="px-4 py-2 rounded-lg bg-primary text-white hover:opacity-90 transition">
-                  Wybierz zdjecie
+                  Wybierz zdjęcie
                 </span>
               </label>
 
@@ -194,11 +194,11 @@ function Zgloszenie() {
             onClick={handleGetLocation}
             className="mb-3 px-4 py-2 bg-primary text-white rounded-lg"
           >
-            Pobierz moja lokalizacje
+            Pobierz moją lokalizację
           </Button>
 
           <div className="text-sm text-gray-600 dark:text-[#93C1DD]">
-            Wybierz lokalizacje na mapie:
+            Wybierz lokalizację na mapie:
           </div>
 
           <div className="relative rounded-xl overflow-hidden border border-border dark:border-darkborder mb-40">
@@ -221,13 +221,13 @@ function Zgloszenie() {
 
           {lat && lng && (
             <div className="text-sm text-gray-600 dark:text-[#93C1DD]">
-              Wybrane wspolrzedne: {lat.toFixed(5)}, {lng.toFixed(5)}
+              Wybrane współrzędne: {lat.toFixed(5)}, {lng.toFixed(5)}
             </div>
           )}
 
           <div className="flex gap-4 pt-2">
             <Button variant="primary" onClick={handleSubmit} disabled={loading}>
-              {loading ? "Wysylanie..." : "Wyslij zgloszenie"}
+              {loading ? "Wysyłanie..." : "Wyślij zgłoszenie"}
             </Button>
 
             <Button

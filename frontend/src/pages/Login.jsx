@@ -3,11 +3,13 @@ import { useState } from "react"
 import Button from "../components/Button"
 import { useToast } from "../context/ToastContext"
 import { useAuth } from "../context/AuthContext"
+import { useTheme } from "../context/ThemeContext"
 import FloatingInput from "../components/FloatingInput"
 
 function Login() {
   const navigate = useNavigate()
   const { login } = useAuth()
+  const { darkMode, toggleTheme } = useTheme()
 
   const [email, setEmail] = useState("")
   const [haslo, setHaslo] = useState("")
@@ -35,7 +37,24 @@ function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background dark:bg-darkbg transition-colors duration-300">
+    <div className="relative min-h-screen flex items-center justify-center bg-background dark:bg-darkbg transition-colors duration-300 px-4">
+      <button
+        type="button"
+        onClick={toggleTheme}
+        className="
+          absolute right-4 top-4
+          flex h-10 w-14 items-center justify-center
+          rounded-xl border border-primary/30
+          bg-surface dark:bg-darksurface
+          text-lg shadow-sm
+          transition hover:bg-primary/10
+          dark:border-primary/40 dark:text-[#B9D6F2]
+        "
+        aria-label="Zmien tryb kolorystyczny"
+      >
+        {darkMode ? "☀️" : "🌙"}
+      </button>
+
       <div className="bg-surface dark:bg-darksurface p-10 rounded-2xl shadow-card border border-border dark:border-darkborder w-full max-w-md">
         <h2 className="text-2xl font-bold text-center mb-8 text-foreground dark:text-[#B9D6F2]">
           Logowanie

@@ -3,11 +3,13 @@ import { useState } from "react"
 import Button from "../components/Button"
 import { useToast } from "../context/ToastContext"
 import { useAuth } from "../context/AuthContext"
+import { useTheme } from "../context/ThemeContext"
 import FloatingInput from "../components/FloatingInput"
 
 function Register() {
   const navigate = useNavigate()
   const { register } = useAuth()
+  const { darkMode, toggleTheme } = useTheme()
 
   const [imie, setImie] = useState("")
   const [email, setEmail] = useState("")
@@ -62,10 +64,27 @@ function Register() {
       error
         ? "border-danger"
         : "border-border dark:border-darkborder"
-    } bg-surface dark:bg-darkbg text-foreround dark:text-[#B9D6F2] focus:outline-none focus:ring-2 focus:ring-primary transition`
+    } bg-surface dark:bg-darkbg text-foreground dark:text-[#B9D6F2] focus:outline-none focus:ring-2 focus:ring-primary transition`
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background dark:bg-darkbg transition-colors duration-300">
+    <div className="relative min-h-screen flex items-center justify-center bg-background dark:bg-darkbg transition-colors duration-300 px-4">
+      <button
+        type="button"
+        onClick={toggleTheme}
+        className="
+          absolute right-4 top-4
+          flex h-10 w-14 items-center justify-center
+          rounded-xl border border-primary/30
+          bg-surface dark:bg-darksurface
+          text-lg shadow-sm
+          transition hover:bg-primary/10
+          dark:border-primary/40 dark:text-[#B9D6F2]
+        "
+        aria-label="Zmien tryb kolorystyczny"
+      >
+        {darkMode ? "☀️" : "🌙"}
+      </button>
+
       <div className="bg-surface dark:bg-darksurface p-10 rounded-2xl shadow-card border border-border dark:border-darkborder w-full max-w-md">
         <h2 className="text-2xl font-bold text-center mb-8 text-foreground dark:text-[#B9D6F2]">
           Rejestracja

@@ -111,9 +111,9 @@ function DodajPomiar() {
         parsed.gps = position
         sessionStorage.setItem("pomiarForm", JSON.stringify(parsed))
 
-        addToast("Pobrano lokalizacje", "success")
+        addToast("Pobrano lokalizację", "success")
       },
-      () => addToast("Nie udalo sie pobrac GPS", "error")
+      () => addToast("Nie udało się pobrać GPS", "error")
     )
   }
 
@@ -142,7 +142,7 @@ function DodajPomiar() {
     }
 
     if (!zdjecie) {
-      addToast("Dodanie pomiaru bez zdjecia nie jest mozliwe", "error")
+      addToast("Dodanie pomiaru bez zdjęcia nie jest możliwe", "error")
       return
     }
 
@@ -194,7 +194,7 @@ function DodajPomiar() {
       addToast("Pomiar zapisany", "success")
       navigate(`/wodowskazy/${wodowskaz.id}`)
     } catch (e) {
-      addToast(e.message || "Blad", "error")
+      addToast(e.message || "Bląd", "error")
     } finally {
       setLoading(false)
     }
@@ -206,7 +206,7 @@ function DodajPomiar() {
         <div className="p-6">
           <Card>
             <div className="text-foreground dark:text-white">
-              Ladowanie wodowskazow...
+              Ładowanie wodowskazow...
             </div>
           </Card>
         </div>
@@ -308,7 +308,7 @@ function DodajPomiar() {
                 type="datetime-local"
                 value={data}
                 onChange={(e) => setData(e.target.value)}
-                className="w-full mt-1 px-4 py-3 rounded-lg bg-surface dark:bg-darkbg text-foreground dark:text-white border border-border dark:border-darkborder focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full mt-1 px-4 py-3 rounded-lg bg-surface dark:bg-darkbg text-foreground dark:text-white border border-border dark:border-darkborder focus:outline-none focus:ring-2 focus:ring-primary [color-scheme:light] dark:[color-scheme:dark]"
               />
             </div>
 
@@ -319,36 +319,36 @@ function DodajPomiar() {
             />
 
             <SelectField
-              label="Dostep do punktu"
+              label="Dostęp do punktu"
               value={dostepDoPunktu}
               onChange={(e) => setDostepDoPunktu(e.target.value)}
               options={[
-                { value: "latwy", label: "Latwy" },
+                { value: "latwy", label: "Łatwy" },
                 { value: "utrudniony", label: "Utrudniony" },
                 { value: "trudny", label: "Trudny" }
               ]}
             />
 
             <SelectField
-              label="Mozliwosc odczytu"
+              label="Możliwość odczytu"
               value={mozliwoscOdczytu}
               onChange={(e) => setMozliwoscOdczytu(e.target.value)}
               options={[
                 { value: "bez_problemu", label: "Bez problemu" },
-                { value: "czesciowo_utrudniona", label: "Czesciowo utrudniona" },
-                { value: "niemozliwa", label: "Niemozliwa" }
+                { value: "czesciowo_utrudniona", label: "Częściowo utrudniona" },
+                { value: "niemozliwa", label: "Niemożliwa" }
               ]}
             />
 
             <SelectField
-              label="Stan laty"
+              label="Stan łaty"
               value={stanLaty}
               onChange={(e) => setStanLaty(e.target.value)}
               options={[
                 { value: "dobry", label: "Dobry" },
                 { value: "zabrudzona", label: "Zabrudzona" },
                 { value: "uszkodzona", label: "Uszkodzona" },
-                { value: "przesunieta", label: "Przesunieta" },
+                { value: "przesunieta", label: "Przesunięta" },
                 { value: "niewidoczna", label: "Niewidoczna" }
               ]}
             />
@@ -359,9 +359,9 @@ function DodajPomiar() {
               onChange={(e) => setWarunkiOdczytu(e.target.value)}
               options={[
                 { value: "dobre", label: "Dobre" },
-                { value: "slabe_swiatlo", label: "Slabe swiatlo" },
+                { value: "slabe_swiatlo", label: "Słabe światlo" },
                 { value: "deszcz", label: "Deszcz" },
-                { value: "roslinnosc", label: "Wysoka roslinnosc" },
+                { value: "roslinnosc", label: "Wysoka roślinność" },
                 { value: "inne", label: "Inne" }
               ]}
             />
@@ -374,7 +374,7 @@ function DodajPomiar() {
 
             <div className="space-y-2">
               <label className="text-sm opacity-80 dark:text-gray-300">
-                Zdjecie pomiaru
+                Zdjęcie pomiaru
               </label>
 
               <div className="flex items-center gap-3">
@@ -387,7 +387,7 @@ function DodajPomiar() {
                   />
 
                   <span className="px-4 py-2 rounded-lg bg-primary text-white hover:opacity-90 transition">
-                    Wybierz zdjecie
+                    Wybierz zdjęcie
                   </span>
                 </label>
 
@@ -399,12 +399,12 @@ function DodajPomiar() {
 
             {powrotZM && !zdjecie && (
               <div className="text-xs text-yellow-400">
-                Po powrocie z mapy wybierz zdjecie ponownie
+                Po powrocie z mapy wybierz zdjęcie ponownie
               </div>
             )}
 
             <Button variant="secondary" onClick={pobierzGPS}>
-              Pobierz lokalizacje GPS
+              Pobierz lokalizację GPS
             </Button>
 
             {gps && (
@@ -414,7 +414,7 @@ function DodajPomiar() {
             )}
 
             <Button variant="secondary" onClick={openMap}>
-              Wskaz lokalizacje na mapie
+              Wskaż lokalizację na mapie
             </Button>
 
             <Button variant="primary" onClick={handleSubmit} disabled={loading}>
@@ -429,7 +429,7 @@ function DodajPomiar() {
             onClick={() => navigate("/wodowskazy")}
             className="w-full py-3 text-base"
           >
-            Menu wodowskazow
+            Menu wodowskazów
           </Button>
 
           <Button
@@ -437,7 +437,7 @@ function DodajPomiar() {
             onClick={() => navigate("/wodowskazy/mapa")}
             className="w-full py-3 text-base"
           >
-            Mapa wodowskazow
+            Mapa wodowskazów
           </Button>
         </div>
       </div>

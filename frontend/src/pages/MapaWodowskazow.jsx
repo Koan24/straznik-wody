@@ -28,6 +28,10 @@ function MapaWodowskazow() {
 
       <div className="space-y-4">
 
+        <h2 className="text-xl font-bold text-center text-foreground dark:text-white">
+          Mapa wodowskazów
+        </h2>
+
         <div className="relative rounded-xl overflow-hidden border border-border dark:border-darkborder mb-4">
           <MapContainer
             center={center}

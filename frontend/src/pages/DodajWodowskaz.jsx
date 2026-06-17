@@ -64,12 +64,12 @@ function DodajWodowskaz() {
 
   const handleSubmit = async () => {
     if (!nazwa.trim()) {
-      addToast("Podaj nazwe punktu", "error")
+      addToast("Podaj nazwę punktu", "error")
       return
     }
 
     if (lat === null || lng === null) {
-      addToast("Wybierz lokalizacje na mapie", "error")
+      addToast("Wybierz lokalizację na mapie", "error")
       return
     }
 
@@ -99,7 +99,7 @@ function DodajWodowskaz() {
       addToast("Wodowskaz zapisany poprawnie", "success")
       navigate("/wodowskazy/mapa")
     } catch (e) {
-      addToast(e.message || "Nie udalo sie zapisac wodowskazu", "error")
+      addToast(e.message || "Nie udało się zapisać wodowskazu", "error")
     } finally {
       setLoading(false)
     }
@@ -133,7 +133,7 @@ function DodajWodowskaz() {
             onChange={(e) => setTypPunktu(e.target.value)}
             options={[
               { value: "wodowskaz", label: "Wodowskaz" },
-              { value: "lata", label: "Lata pomiarowa" },
+              { value: "lata", label: "Łata pomiarowa" },
               { value: "punkt_obserwacyjny", label: "Punkt obserwacyjny" },
               { value: "inny", label: "Inny" }
             ]}
@@ -152,11 +152,11 @@ function DodajWodowskaz() {
           />
 
           <SelectField
-            label="Dostepnosc punktu"
+            label="Dostępność punktu"
             value={dostepnosc}
             onChange={(e) => setDostepnosc(e.target.value)}
             options={[
-              { value: "latwa", label: "Latwa" },
+              { value: "latwa", label: "Łatwa" },
               { value: "utrudniona", label: "Utrudniona" },
               { value: "trudna", label: "Trudna" }
             ]}
@@ -171,12 +171,12 @@ function DodajWodowskaz() {
               type="date"
               value={dataInstalacji}
               onChange={(e) => setDataInstalacji(e.target.value)}
-              className="w-full mt-1 px-4 py-3 rounded-lg bg-surface dark:bg-darkbg text-foreground dark:text-white border border-border dark:border-darkborder focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full mt-1 px-4 py-3 rounded-lg bg-surface dark:bg-darkbg text-foreground dark:text-white border border-border dark:border-darkborder focus:outline-none focus:ring-2 focus:ring-primary [color-scheme:light] dark:[color-scheme:dark]"
             />
           </div>
 
           <FloatingInput
-            label="Rzedna 0 cm"
+            label="Rzędna 0 cm"
             type="number"
             value={rzednaZero}
             onChange={(e) => setRzednaZero(e.target.value)}
@@ -190,7 +190,7 @@ function DodajWodowskaz() {
 
           <div className="space-y-2">
             <label className="text-sm opacity-80 dark:text-gray-300">
-              Zdjecie referencyjne
+              Zdjęcie referencyjne
             </label>
 
             <div className="flex items-center gap-3">
@@ -203,7 +203,7 @@ function DodajWodowskaz() {
                 />
 
                 <span className="px-4 py-2 rounded-lg bg-primary text-white hover:opacity-90 transition">
-                  Wybierz zdjecie
+                  Wybierz zdjęcie
                 </span>
               </label>
 
@@ -232,7 +232,7 @@ function DodajWodowskaz() {
 
           {lat && lng && (
             <div className="text-sm text-gray-600 dark:text-[#93C1DD]">
-              Wybrane wspolrzedne: {lat.toFixed(5)}, {lng.toFixed(5)}
+              Wybrane współrzędne: {lat.toFixed(5)}, {lng.toFixed(5)}
             </div>
           )}
 

@@ -14,14 +14,35 @@ function Raport() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
-  function normalizeText(value) {
+  function pdfText(value) {
     if (value === null || value === undefined) return "-"
-
     return String(value)
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/\u0142/g, "l")
-      .replace(/\u0141/g, "L")
+  }
+
+  function arrayBufferToBase64(buffer) {
+    let binary = ""
+    const bytes = new Uint8Array(buffer)
+
+    for (let i = 0; i < bytes.byteLength; i += 1) {
+      binary += String.fromCharCode(bytes[i])
+    }
+
+    return window.btoa(binary)
+  }
+
+  async function loadPdfFont(doc) {
+    const response = await fetch("/fonts/NotoSans-Regular.ttf")
+
+    if (!response.ok) {
+      throw new Error("Nie udalo sie zaladowac fontu PDF")
+    }
+
+    const fontBuffer = await response.arrayBuffer()
+    const fontBase64 = arrayBufferToBase64(fontBuffer)
+
+    doc.addFileToVFS("NotoSans-Regular.ttf", fontBase64)
+    doc.addFont("NotoSans-Regular.ttf", "NotoSans", "normal")
+    doc.setFont("NotoSans", "normal")
   }
 
   function formatDate(value) {
@@ -34,7 +55,7 @@ function Raport() {
 
     const labels = {
       open: "Otwarte",
-      closed: "Zamkniete",
+      closed: "Zamkni\u0119te",
       in_progress: "W trakcie"
     }
 
@@ -80,7 +101,7 @@ function Raport() {
   }
 
   function addWrappedText(doc, label, value, x, y, maxWidth) {
-    const text = `${label}: ${normalizeText(value)}`
+    const text = `${label}: ${pdfText(value)}`
     const lines = doc.splitTextToSize(text, maxWidth)
 
     doc.text(lines, x, y)
@@ -100,26 +121,27 @@ function Raport() {
       })
 
       const doc = new jsPDF("p", "mm", "a4")
+      await loadPdfFont(doc)
 
       doc.setFontSize(16)
-      doc.text("Raport zgloszen obiektow hydrotechnicznych", 20, 20)
+      doc.text("Raport zg\u0142osze\u0144 obiekt\u00f3w hydrotechnicznych", 20, 20)
 
       doc.setFontSize(10)
       doc.text(`Data wygenerowania: ${new Date().toLocaleString("pl-PL")}`, 20, 30)
       doc.text(`Zakres dat: ${dataOd || "-"} - ${dataDo || "-"}`, 20, 36)
       doc.text(`Status: ${status ? formatStatus(status) : "Wszystkie"}`, 20, 42)
-      doc.text(`Liczba zgloszen: ${raportZgloszenia.length}`, 20, 48)
+      doc.text(`Liczba zg\u0142osze\u0144: ${raportZgloszenia.length}`, 20, 48)
 
       let y = 60
 
       if (raportZgloszenia.length === 0) {
-        doc.text("Brak zgloszen dla wybranych filtrow.", 20, y)
+        doc.text("Brak zg\u0142osze\u0144 dla wybranych filtr\u00f3w.", 20, y)
         doc.save("raport_zgloszen.pdf")
         return
       }
 
       doc.setFontSize(12)
-      doc.text("Zestawienie zgloszen", 20, y)
+      doc.text("Zestawienie zg\u0142osze\u0144", 20, y)
       y += 8
 
       doc.setFontSize(8)
@@ -130,10 +152,10 @@ function Raport() {
         const row = [
           `${index + 1}.`,
           normalizeText(formatDate(z.createdAt)),
-          normalizeText(z.tytul),
-          normalizeText(z.typObiektu),
-          normalizeText(formatStatus(z.status)),
-          normalizeText(z.stopien)
+          pdfText(z.tytul),
+          pdfText(z.typObiektu),
+          pdfText(formatStatus(z.status)),
+          pdfText(z.stopien)
         ]
 
         doc.text(row[0], 20, y)
@@ -150,7 +172,7 @@ function Raport() {
       y = 20
 
       doc.setFontSize(14)
-      doc.text("Szczegoly zgloszen", 20, y)
+      doc.text("Szczeg\u00f3\u0142y zg\u0142osze\u0144", 20, y)
       y += 10
 
       for (let i = 0; i < raportZgloszenia.length; i += 1) {
@@ -159,16 +181,16 @@ function Raport() {
         y = addNewPageIfNeeded(doc, y, 80)
 
         doc.setFontSize(12)
-        doc.text(`Zgloszenie ${i + 1}`, 20, y)
+        doc.text(`Zg\u0142oszenie ${i + 1}`, 20, y)
         y += 8
 
         doc.setFontSize(9)
 
-        y = addWrappedText(doc, "Tytul", z.tytul, 20, y, 170)
+        y = addWrappedText(doc, "Tytu\u0142", z.tytul, 20, y, 170)
         y = addWrappedText(doc, "Data", formatDate(z.createdAt), 20, y, 170)
         y = addWrappedText(doc, "Typ obiektu", z.typObiektu, 20, y, 170)
         y = addWrappedText(doc, "Rodzaj uszkodzenia", z.rodzajUszkodzenia, 20, y, 170)
-        y = addWrappedText(doc, "Stopien pilnosci", z.stopien, 20, y, 170)
+        y = addWrappedText(doc, "Stopie\u0144 pilno\u015bci", z.stopien, 20, y, 170)
         y = addWrappedText(doc, "Status", formatStatus(z.status), 20, y, 170)
 
         if (z.lat && z.lng) {
@@ -177,7 +199,7 @@ function Raport() {
           const mapLink = `https://www.google.com/maps?q=${z.lat},${z.lng}`
 
           doc.setTextColor(0, 0, 255)
-          doc.textWithLink("Otworz lokalizacje w Google Maps", 20, y, { url: mapLink })
+          doc.textWithLink("Otw\u00f3rz lokalizacj\u0119 w Google Maps", 20, y, { url: mapLink })
           doc.setTextColor(0, 0, 0)
 
           y += 7
@@ -201,11 +223,11 @@ function Raport() {
             doc.addImage(imageBase64, imageType, 20, y, 80, 55)
             y += 63
           } catch (err) {
-            doc.text("Nie udalo sie dolaczyc zdjecia do raportu.", 20, y)
+            doc.text("Nie uda\u0142o si\u0119 do\u0142\u0105czy\u0107 zdj\u0119cia do raportu.", 20, y)
             y += 7
           }
         } else {
-          doc.text("Brak zdjecia.", 20, y)
+          doc.text("Brak zdj\u0119cia.", 20, y)
           y += 7
         }
 

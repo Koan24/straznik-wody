@@ -9,7 +9,8 @@ import FloatingInput from "../components/FloatingInput"
 function Register() {
   const navigate = useNavigate()
   const { register } = useAuth()
-  const { darkMode, toggleTheme } = useTheme()
+  const { theme, toggleTheme } = useTheme()
+  const isDark = theme === "dark"
 
   const [imie, setImie] = useState("")
   const [email, setEmail] = useState("")
@@ -82,7 +83,7 @@ function Register() {
         "
         aria-label="Zmien tryb kolorystyczny"
       >
-        {darkMode ? "☀️" : "🌙"}
+        {isDark ? "🌙" : "☀️"}
       </button>
 
       <div className="bg-surface dark:bg-darksurface p-10 rounded-2xl shadow-card border border-border dark:border-darkborder w-full max-w-md">
